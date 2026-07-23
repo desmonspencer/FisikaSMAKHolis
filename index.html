@@ -1,654 +1,125 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desmon Donald Siagian · Guru Fisika</title>
-  <!-- Font & Ikon -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: "Inter", sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 20% 30%, #0b1a2e, #030712);
-      padding: 1.5rem;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Partikel latar (interaktif gerakan) */
-    .particle-field {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .particle {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 50%;
-      box-shadow: 0 0 20px rgba(0, 180, 255, 0.2);
-      animation: floatParticle linear infinite alternate;
-    }
-
-    @keyframes floatParticle {
-      0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-      100% { transform: translate(40px, -30px) scale(1.2); opacity: 0.7; }
-    }
-
-    /* Kartu utama */
-    .profile-card {
-      position: relative;
-      z-index: 10;
-      max-width: 780px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 3.5rem;
-      padding: 2.8rem 2.8rem 3.2rem;
-      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
-      transition: box-shadow 0.3s ease, transform 0.25s ease;
-      animation: cardFloat 5s ease-in-out infinite;
-    }
-
-    @keyframes cardFloat {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-      100% { transform: translateY(0px); }
-    }
-
-    .profile-card:hover {
-      box-shadow: 0 40px 80px -18px #0077ff30, 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
-      transform: scale(1.005);
-    }
-
-    /* Header dengan avatar */
-    .card-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 1.8rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .avatar-wrapper {
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .avatar {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #1e3a5f, #0b1f33);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.8rem;
-      font-weight: 500;
-      color: #b4d9ff;
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 12px 28px -8px #00000080, 0 0 0 1px #3f7eb6 inset;
-      transition: all 0.3s ease;
-      user-select: none;
-      animation: pulseGlow 3s ease-in-out infinite;
-    }
-
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 0 #3f7eb644, 0 12px 28px -8px #00000080; }
-      50% { box-shadow: 0 0 0 6px #3f7eb622, 0 16px 36px -6px #000000cc; }
-      100% { box-shadow: 0 0 0 0 #3f7eb644, 0 12px 28px -8px #00000080; }
-    }
-
-    .avatar i {
-      filter: drop-shadow(0 4px 8px #00000055);
-    }
-
-    .badge-role {
-      position: absolute;
-      bottom: 4px;
-      right: -2px;
-      background: #0f2b44;
-      border: 1.5px solid #63b3ff;
-      border-radius: 60px;
-      padding: 0.3rem 0.9rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: #b3daff;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 4px 12px #00000055;
-      white-space: nowrap;
-    }
-
-    .title-group {
-      flex: 1;
-    }
-
-    .title-group h1 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #f0f9ff, #b6d9ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 0.2rem;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.3rem 0.8rem;
-    }
-
-    .title-group h1 .suffix {
-      font-size: 1.2rem;
-      font-weight: 400;
-      color: #8bb9f0;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 0.1rem 0.9rem;
-      border-radius: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      letter-spacing: 0.3px;
-    }
-
-    .profession-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: rgba(0, 120, 255, 0.12);
-      border: 1px solid rgba(100, 180, 255, 0.25);
-      border-radius: 80px;
-      padding: 0.5rem 1.5rem 0.5rem 1.2rem;
-      margin-top: 0.5rem;
-      backdrop-filter: blur(4px);
-      transition: background 0.2s;
-    }
-
-    .profession-tag i {
-      color: #7bbaff;
-      font-size: 1.1rem;
-    }
-
-    .profession-tag span {
-      color: #d1e9ff;
-      font-weight: 500;
-      font-size: 1.1rem;
-      letter-spacing: 0.3px;
-    }
-
-    .profession-tag:hover {
-      background: rgba(0, 140, 255, 0.2);
-      border-color: #4a9eff;
-    }
-
-    /* Divider dengan animasi */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin: 2rem 0 2rem;
-    }
-
-    .divider-line {
-      height: 1px;
-      flex: 1;
-      background: linear-gradient(90deg, transparent, #5f9eff66, #b0d4ff66, transparent);
-    }
-
-    .divider-icon {
-      color: #4f92e0;
-      font-size: 0.9rem;
-      opacity: 0.7;
-      animation: spinSlow 12s linear infinite;
-    }
-
-    @keyframes spinSlow {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Bio / kutipan */
-    .bio {
-      margin: 1.8rem 0 2.2rem;
-      padding: 1rem 0.2rem;
-    }
-
-    .quote {
-      font-size: 1.2rem;
-      font-weight: 350;
-      line-height: 1.7;
-      color: #cddcec;
-      border-left: 3px solid #3f8eff;
-      padding-left: 1.5rem;
-      font-style: italic;
-      letter-spacing: 0.2px;
-      background: linear-gradient(90deg, #ffffff08, transparent);
-      border-radius: 0 8px 8px 0;
-    }
-
-    .quote i {
-      color: #6aaaff;
-      margin-right: 6px;
-      font-size: 1rem;
-      opacity: 0.7;
-    }
-
-    .highlight {
-      color: #9bc9ff;
-      font-weight: 400;
-      background: #ffffff0a;
-      padding: 0.1rem 0.4rem;
-      border-radius: 6px;
-    }
-
-    /* Grid keahlian / interaksi */
-    .interactive-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 1rem;
-      margin: 2.2rem 0 1.8rem;
-    }
-
-    .grid-item {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 2rem;
-      padding: 1rem 0.8rem;
-      text-align: center;
-      backdrop-filter: blur(2px);
-      transition: all 0.25s ease;
-      cursor: default;
-      box-shadow: 0 6px 14px #0000001a;
-    }
-
-    .grid-item:hover {
-      background: rgba(60, 140, 255, 0.08);
-      border-color: #3c8eff66;
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 12px 28px -6px #0055ff30;
-    }
-
-    .grid-item i {
-      font-size: 1.8rem;
-      color: #80baff;
-      margin-bottom: 6px;
-      display: block;
-      transition: 0.2s;
-    }
-
-    .grid-item:hover i {
-      color: #b8daff;
-      transform: scale(1.1);
-    }
-
-    .grid-item span {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 450;
-      color: #c4dbf5;
-      letter-spacing: 0.2px;
-    }
-
-    .grid-item .sub {
-      font-size: 0.7rem;
-      opacity: 0.6;
-      font-weight: 300;
-      margin-top: 3px;
-    }
-
-    /* Tombol interaktif */
-    .action-bar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-top: 2.5rem;
-      border-top: 1px solid #ffffff0a;
-      padding-top: 2rem;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .social-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 60px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: #b0cdff;
-      font-size: 1.2rem;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .social-link:hover {
-      background: #2f6fb0;
-      border-color: #7ab6ff;
-      color: white;
-      transform: scale(1.08);
-      box-shadow: 0 8px 18px #003faa40;
-    }
-
-    .cta-button {
-      background: linear-gradient(135deg, #1e4b7a, #0f2c4a);
-      border: none;
-      border-radius: 60px;
-      padding: 0.75rem 2rem;
-      font-weight: 500;
-      color: #e5f0ff;
-      font-size: 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      border: 1px solid #3e7bb6;
-      box-shadow: 0 4px 14px #00000044;
-      transition: 0.25s;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-      letter-spacing: 0.3px;
-    }
-
-    .cta-button i {
-      font-size: 1rem;
-      transition: 0.2s;
-    }
-
-    .cta-button:hover {
-      background: linear-gradient(135deg, #256bb0, #123d66);
-      border-color: #79b6ff;
-      box-shadow: 0 8px 28px #0066ff40;
-      transform: scale(1.02) translateY(-2px);
-    }
-
-    .cta-button:active {
-      transform: scale(0.97);
-    }
-
-    .cta-button.clicked i {
-      animation: pop 0.3s ease;
-    }
-
-    @keyframes pop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.4); }
-      100% { transform: scale(1); }
-    }
-
-    /* footer kecil */
-    .footnote {
-      margin-top: 2.2rem;
-      text-align: right;
-      font-size: 0.7rem;
-      opacity: 0.25;
-      color: #b0cbee;
-      letter-spacing: 0.5px;
-      border-top: 1px solid #ffffff06;
-      padding-top: 1.4rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .profile-card {
-        padding: 1.8rem 1.5rem 2rem;
-        border-radius: 2.5rem;
-      }
-      .card-header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-      .title-group h1 {
-        font-size: 1.8rem;
-        justify-content: center;
-      }
-      .title-group h1 .suffix {
-        font-size: 0.9rem;
-      }
-      .profession-tag {
-        justify-content: center;
-        padding: 0.4rem 1.2rem;
-      }
-      .quote {
-        font-size: 1rem;
-        padding-left: 1rem;
-      }
-      .action-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .social-links {
-        justify-content: center;
-      }
-      .cta-button {
-        justify-content: center;
-      }
-      .interactive-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Desmon Donald Siagian — CV Interaktif</title>
+<style>
+  :root{--accent:#2b6cb0;--muted:#666;}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;color:#222}
+  header{background:linear-gradient(90deg,#0b3d91,#2b6cb0);color:#fff;padding:28px 16px}
+  .container{max-width:980px;margin:18px auto;padding:0 16px}
+  .hero{display:flex;gap:18px;align-items:center}
+  .avatar{width:120px;height:120px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700}
+  h1{margin:.2rem 0;font-size:1.6rem}
+  .meta{color:var(--muted);font-size:.95rem}
+  nav{margin-top:12px}
+  nav a{color:#fff;margin-right:12px;text-decoration:none;font-weight:600}
+  section{background:#fff;padding:16px;margin:12px 0;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+  .skill{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
+  .timeline{list-style:none;padding:0;margin:0}
+  .timeline li{padding:8px 0;border-left:3px solid var(--accent);margin-left:12px;padding-left:12px}
+  footer{font-size:.9rem;color:var(--muted);text-align:center;padding:18px 0}
+  /* interactive */
+  .tabs{display:flex;gap:8px;margin-bottom:12px}
+  .tabs button{padding:8px 12px;border-radius:6px;border:1px solid #ddd;background:#f7f7f7;cursor:pointer}
+  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .hidden{display:none}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
+<header>
+  <div class="container hero">
+    <div class="avatar">DD</div>
+    <div>
+      <h1>Desmon Donald Siagian</h1>
+      <div class="meta">Guru Fisika • Pengalaman mengajar & organisasi • Bandung, Jawa Barat</div>
+      <nav>
+        <a href="#about">Tentang</a><a href="#experience">Pengalaman</a><a href="#works">Aktivitas</a><a href="#contact">Kontak</a>
+      </nav>
+    </div>
+  </div>
+</header>
 
-  <!-- Partikel latar belakang -->
-  <div class="particle-field" id="particleField"></div>
+<main class="container">
+  <section id="about">
+    <h2>Tentang Saya</h2>
+    <p><strong>Nama:</strong> DESMON DONALD SIAGIAN<br>
+       <strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, Taman Sari, Bandung, West Java, 40116.</p>
+    <p>Saya seorang guru Fisika dengan latar belakang Geophysics Engineering (ITB) dan pengalaman mengajar di SMA serta aktif dalam kegiatan organisasi dan pelatihan pendidikan.</p>
+  </section>
 
-  <!-- Kartu profil utama -->
-  <main class="profile-card" role="main" aria-label="Kartu profil Desmon Donald Siagian">
+  <section class="grid">
+    <div>
+      <section id="experience">
+        <h3>Pengalaman Kerja & Pendidikan</h3>
+        <ul class="timeline">
+          <li><strong>Guru @ SMA BPK Penabur Holis</strong> (2016 - sekarang)</li>
+          <li><strong>Account Officer, PT Bank Mega</strong> (2011 - 2014)</li>
+          <li><strong>Geophysics Engineering</strong>, ITB (2003 - 2009)</li>
+        </ul>
+      </section>
 
-    <div class="card-header">
-      <div class="avatar-wrapper">
-        <div class="avatar" aria-label="Avatar Desmon">
-          <i class="fas fa-user-astronaut"></i>
+      <section id="works">
+        <h3>Aktivitas & Pelatihan</h3>
+        <div class="tabs" role="tablist">
+          <button class="active" data-tab="a">Organisasi</button>
+          <button data-tab="b">Seminar</button>
+          <button data-tab="c">Hobi</button>
         </div>
-        <div class="badge-role">S.T.</div>
-      </div>
-      <div class="title-group">
-        <h1>
-          Desmon Donald Siagian
-          <span class="suffix">S.T.</span>
-        </h1>
-        <div class="profession-tag">
-          <i class="fas fa-atom"></i>
-          <span>Guru Fisika</span>
-          <i class="fas fa-flask" style="margin-left: 4px; opacity: 0.7;"></i>
-        </div>
-      </div>
+        <div id="tab-a"><p>Secretarie berbagai forum komunitas dan kepanitiaan pemilu lokal.</p></div>
+        <div id="tab-b" class="hidden"><p>Workshop Laboratory Management, Teacher Creativity Seminar, PENABUR EDU SUMMIT.</p></div>
+        <div id="tab-c" class="hidden"><p>Organisasi, membaca sejarah, musik, travelling.</p></div>
+      </section>
+
+      <section>
+        <h3>Keahlian</h3>
+        <div class="skill"><span>Matlab / Fortran</span><strong>Menengah</strong></div>
+        <div class="skill"><span>Microsoft Office</span><strong>Mahir</strong></div>
+        <div class="skill"><span>Manajemen Laboratorium</span><strong>Terlatih</strong></div>
+      </section>
     </div>
 
-    <!-- Divider dekoratif -->
-    <div class="divider">
-      <span class="divider-line"></span>
-      <i class="fas fa-circle-notch divider-icon"></i>
-      <span class="divider-line"></span>
-    </div>
+    <aside>
+      <section>
+        <h3>Kontak</h3>
+        <p><strong>Email:</strong> desmon.spencer@gmail.com<br>
+           <strong>Telepon:</strong> 089697819495</p>
+        <p><a href="#" id="download">Unduh CV (PDF)</a></p>
+      </section>
 
-    <!-- Bio / kutipan -->
-    <div class="bio">
-      <div class="quote">
-        <i class="fas fa-quote-left"></i> 
-        Membimbing generasi memahami <span class="highlight">gerak</span>, 
-        <span class="highlight">energi</span>, dan <span class="highlight">alam semesta</span> 
-        melalui fisika yang inspiratif.
-      </div>
-    </div>
+      <section>
+        <h3>Ringkasan CV</h3>
+        <p><strong>Pendidikan:</strong> Geophysics Engineering, ITB.</p>
+        <p><strong>Bahasa:</strong> Indonesia, Inggris (fungsional).</p>
+      </section>
+    </aside>
+  </section>
+</main>
 
-    <!-- Grid interaktif: keahlian / minat -->
-    <div class="interactive-grid">
-      <div class="grid-item">
-        <i class="fas fa-chart-line"></i>
-        <span>Mekanika</span>
-        <span class="sub">Kinematika & Dinamika</span>
-      </div>
-      <div class="grid-item">
-        <i class="fas fa-bolt"></i>
-        <span>Listrik & Magnet</span>
-        <span class="sub">Rangkaian & Medan</span>
-      </div>
-      <div class="grid-item">
-        <i class="fas fa-fire"></i>
-        <span>Termodinamika</span>
-        <span class="sub">Kalor & Entropi</span>
-      </div>
-      <div class="grid-item">
-        <i class="fas fa-satellite"></i>
-        <span>Astrofisika</span>
-        <span class="sub">Semesta & Relativitas</span>
-      </div>
-    </div>
+<footer>
+  Dibuat otomatis — sesuaikan konten dan tautan sebelum publikasi. Sumber profil serupa: LinkedIn (nama serupa ditemukan). 
+</footer>
 
-    <!-- Aksi / interaksi -->
-    <div class="action-bar">
-      <div class="social-links">
-        <a href="#" class="social-link" aria-label="Email" title="Email"><i class="fas fa-envelope"></i></a>
-        <a href="#" class="social-link" aria-label="LinkedIn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" class="social-link" aria-label="YouTube" title="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="social-link" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a>
-      </div>
-      <button class="cta-button" id="greetButton">
-        <i class="fas fa-hand-peace"></i> 
-        <span>Sapa Saya</span>
-      </button>
-    </div>
-
-    <!-- Footer kecil -->
-    <div class="footnote">
-      <i class="fas fa-asterisk" style="opacity: 0.5; margin-right: 6px;"></i> 
-      interaktif · fisika · 2026
-    </div>
-  </main>
-
-  <script>
-    (function() {
-      // 1. Partikel latar (dinamis)
-      const field = document.getElementById('particleField');
-      const particleCount = 25;
-      for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        const size = Math.floor(Math.random() * 20) + 8;
-        particle.style.width = size + 'px';
-        particle.style.height = size + 'px';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.animationDuration = (Math.random() * 12 + 8) + 's';
-        particle.style.animationDelay = (Math.random() * 6) + 's';
-        particle.style.background = `radial-gradient(circle at 30% 30%, rgba(120, 200, 255, ${Math.random() * 0.2 + 0.05}), rgba(30, 80, 180, 0.1))`;
-        field.appendChild(particle);
-      }
-
-      // 2. Tombol "Sapa Saya" interaktif
-      const greetBtn = document.getElementById('greetButton');
-      const btnIcon = greetBtn.querySelector('i');
-      const btnText = greetBtn.querySelector('span');
-
-      greetBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // Efek klik animasi
-        btnIcon.classList.remove('fa-hand-peace');
-        btnIcon.classList.add('fa-hand-sparkles');
-        btnText.textContent = 'Halo!';
-
-        // Ubah teks sementara
-        setTimeout(() => {
-          btnIcon.classList.remove('fa-hand-sparkles');
-          btnIcon.classList.add('fa-hand-peace');
-          btnText.textContent = 'Sapa Saya';
-        }, 1200);
-
-        // Efek pop pada ikon
-        btnIcon.classList.add('clicked');
-        setTimeout(() => btnIcon.classList.remove('clicked'), 400);
-
-        // Notifikasi kecil (opsional)
-        const originalText = btnText.textContent;
-        const originalIcon = btnIcon.className;
-
-        // Respons: tampilkan alert yang lebih halus (tapi tidak mengganggu)
-        const toast = document.createElement('div');
-        toast.style.position = 'fixed';
-        toast.style.bottom = '30px';
-        toast.style.left = '50%';
-        toast.style.transform = 'translateX(-50%)';
-        toast.style.background = 'rgba(10, 30, 60, 0.85)';
-        toast.style.backdropFilter = 'blur(12px)';
-        toast.style.padding = '0.8rem 1.8rem';
-        toast.style.borderRadius = '60px';
-        toast.style.border = '1px solid #4f8eff55';
-        toast.style.color = '#d0e6ff';
-        toast.style.fontWeight = '400';
-        toast.style.boxShadow = '0 12px 30px #00000080';
-        toast.style.zIndex = '999';
-        toast.style.fontSize = '1rem';
-        toast.style.letterSpacing = '0.3px';
-        toast.innerHTML = `<i class="fas fa-smile-wink" style="margin-right: 10px;"></i> Senang berkenalan, Desmon!`;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-          toast.style.transition = 'opacity 0.5s';
-          toast.style.opacity = '0';
-          setTimeout(() => toast.remove(), 500);
-        }, 2000);
+<script>
+  // Tabs interaktif
+  document.querySelectorAll('.tabs button').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const id = btn.dataset.tab;
+      ['a','b','c'].forEach(k=>{
+        document.getElementById('tab-'+k).classList.toggle('hidden', k!==id);
       });
-
-      // 3. Efek hover pada avatar (interaktif tambahan)
-      const avatar = document.querySelector('.avatar');
-      avatar.addEventListener('mouseenter', () => {
-        avatar.style.transform = 'scale(1.03) rotate(2deg)';
-      });
-      avatar.addEventListener('mouseleave', () => {
-        avatar.style.transform = 'scale(1) rotate(0deg)';
-      });
-
-      // 4. Interaksi pada item grid (tambahan)
-      document.querySelectorAll('.grid-item').forEach(item => {
-        item.addEventListener('click', function() {
-          const label = this.querySelector('span')?.innerText || 'topik';
-          this.style.background = 'rgba(60, 140, 255, 0.2)';
-          this.style.borderColor = '#8bbaff';
-          setTimeout(() => {
-            this.style.background = '';
-            this.style.borderColor = '';
-          }, 400);
-          // get icon inside
-          const icon = this.querySelector('i');
-          if (icon) {
-            icon.style.transform = 'scale(1.3)';
-            setTimeout(() => icon.style.transform = '', 300);
-          }
-        });
-      });
-
-    })();
-  </script>
+    });
+  });
+  // Placeholder download
+  document.getElementById('download').addEventListener('click',e=>{
+    e.preventDefault();
+    alert('Tambahkan file PDF CV Anda di server dan perbarui atribut href link ini.');
+  });
+</script>
 </body>
 </html>
