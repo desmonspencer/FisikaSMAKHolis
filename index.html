@@ -29,6 +29,7 @@
   .snap img{width:100%;height:auto;border-radius:6px}
   .config{display:flex;gap:8px;align-items:center;margin-top:8px}
   input[type="text"]{flex:1;padding:8px;border-radius:6px;border:1px solid #ddd}
+  .note{color:var(--muted);font-size:.9rem;margin-top:6px}
   @media(max-width:760px){.streams{justify-content:center}}
 </style>
 </head>
@@ -52,13 +53,17 @@
 
   <section class="card">
     <h3>Live Streams</h3>
+
     <div class="config">
       <label style="font-weight:600">Secure stream URL (HTTPS, optional):</label>
-      <input id="secureUrl" type="text" placeholder="https://example.ngrok.io/stream.m3u8 (isi jika ada)">
+      <input id="secureUrl" type="text" placeholder="https://xxxx.ngrok.io/stream.m3u8 atau https://stream.example.com/stream.m3u8">
       <button id="applySecure" class="secondary">Gunakan</button>
+      <button id="resetBtn" class="secondary">Reset ke 10.101.209.98</button>
     </div>
-    <p style="color:var(--muted);font-size:.9rem;margin-top:6px">
-      Jika kosong, halaman akan mencoba langsung ke <code>http://10.101.209.98/</code>. Untuk publik, gunakan HTTPS (ngrok atau proxy).
+
+    <p class="note">
+      Jika kosong, halaman akan mencoba langsung ke <code>http://10.101.209.98/</code>. Untuk publik, gunakan HTTPS (ngrok atau proxy).  
+      Jika kamera memakai RTSP, konversi RTSP→HLS diperlukan (ffmpeg).
     </p>
 
     <div class="streams" style="margin-top:12px">
@@ -104,7 +109,7 @@
   </section>
 </main>
 
-<footer style="text-align:center;padding:18px;color:var(--muted)">Jika stream tidak tampil, baca pesan di status atau gunakan HTTPS tunnel/proxy.</footer>
+<footer style="text-align:center;padding:18px;color:var(--muted)">Jalankan lokal via HTTP untuk uji cepat atau gunakan HTTPS proxy/ngrok untuk publik.</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
 <script>
@@ -135,28 +140,29 @@ const localSnapImg = document.getElementById('localSnapImg');
 
 const secureInput = document.getElementById('secureUrl');
 const applySecure = document.getElementById('applySecure');
+const resetBtn = document.getElementById('resetBtn');
 
 function setRemoteStatus(t){ remoteStatus.textContent = t; }
 function setLocalStatus(t){ localStatus.textContent = t; }
 
-/* Helper: test reachability (fetch HEAD) */
-async function testReach(url, timeout=4000){
+/* quick reachability test using fetch HEAD (best-effort) */
+async function reachable(url, timeout=3000){
   try {
     const controller = new AbortController();
     const id = setTimeout(()=>controller.abort(), timeout);
-    const res = await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+    // mode:no-cors used to avoid CORS blocking; success means likely reachable
+    await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
     clearTimeout(id);
-    // mode:no-cors may not expose status; if fetch resolves, assume reachable
     return true;
   } catch(e){
     return false;
   }
 }
 
-/* Initialize remote stream: prefer SECURE_HLS if provided, else try HTTP_BASE */
+/* Initialize remote stream */
 async function initRemote(){
   setRemoteStatus('Memeriksa sumber stream…');
-  // If user provided HTTPS HLS, try it first
+  // prefer HTTPS HLS if provided
   if(SECURE_HLS && SECURE_HLS.startsWith('https://')){
     try {
       if(SECURE_HLS.includes('.m3u8') && Hls.isSupported()){
@@ -188,9 +194,8 @@ async function initRemote(){
 
   for(const c of candidates){
     try {
-      // quick reachability test (best-effort)
-      const reachable = await testReach(c);
-      if(!reachable) { console.warn('not reachable', c); continue; }
+      const ok = await reachable(c);
+      if(!ok) { console.warn('not reachable', c); continue; }
 
       if(c.endsWith('.m3u8') && Hls.isSupported()){
         const hls = new Hls();
@@ -209,7 +214,7 @@ async function initRemote(){
         setRemoteStatus('Live (MJPEG)');
         return;
       }
-      // fallback: try iframe to base URL
+      // fallback iframe to base URL
       remoteIframe.src = c; remoteIframe.style.display='block'; remoteVideo.style.display='none';
       setRemoteStatus('Fallback iframe (cek path)');
       return;
@@ -292,6 +297,18 @@ applySecure.addEventListener('click', ()=>{
     remoteSnapWrap.style.display = 'none';
     initRemote();
   }
+});
+
+/* Reset to default HTTP base */
+resetBtn.addEventListener('click', ()=>{
+  SECURE_HLS = '';
+  secureInput.value = '';
+  remoteVideo.src = '';
+  remoteVideo.style.display = '';
+  remoteMJPEG.style.display = 'none';
+  remoteIframe.style.display = 'none';
+  remoteSnapWrap.style.display = 'none';
+  initRemote();
 });
 
 /* Start */
