@@ -3,34 +3,50 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Desmon Donald Siagian — CV & Live Stream</title>
+<title>Desmon Donald Siagian — CV Interaktif & Live Stream</title>
+<meta name="description" content="CV interaktif Desmon Donald Siagian — profil, pengalaman, kontak, dan live stream." />
 <style>
-  :root{--accent:#0b3d91;--accent2:#2b6cb0;--muted:#666;--bg:#f6f8fb}
+  :root{
+    --accent:#0b3d91;
+    --accent2:#2b6cb0;
+    --muted:#666;
+    --bg:#f6f8fb;
+    --card:#fff;
+    --radius:10px;
+  }
   *{box-sizing:border-box}
-  body{font-family:system-ui,Arial;margin:0;background:var(--bg);color:#222}
-  header{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:18px}
-  .container{max-width:1100px;margin:18px auto;padding:0 16px}
-  .hero{display:flex;gap:14px;align-items:center}
-  .avatar{width:88px;height:88px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800}
-  h1{margin:.2rem 0;font-size:1.4rem}
-  .meta{color:rgba(255,255,255,.95);font-size:.95rem}
-  main{max-width:1100px;margin:18px auto;padding:0 16px}
-  .card{background:#fff;padding:14px;margin:12px 0;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-  .streams{display:flex;gap:12px;flex-wrap:wrap}
-  .stream-box{width:340px;border-radius:10px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,.06)}
-  .stream-head{padding:8px 10px;background:#fafafa;display:flex;justify-content:space-between;align-items:center}
+  body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:var(--bg); color:#222; line-height:1.45}
+  header{background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; padding:22px 16px; position:relative}
+  .container{max-width:1100px; margin:18px auto; padding:0 16px}
+  .hero{display:flex; gap:18px; align-items:center}
+  .avatar{width:96px; height:96px; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:800; font-size:20px}
+  h1{margin:.2rem 0; font-size:1.5rem}
+  .meta{color:rgba(255,255,255,.95); font-size:.95rem}
+  nav{margin-top:10px}
+  nav a{color:#fff; margin-right:12px; text-decoration:none; font-weight:600}
+  main{max-width:1100px; margin:18px auto; padding:0 16px}
+  section.card{background:var(--card); padding:16px; margin:12px 0; border-radius:var(--radius); box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .grid{display:grid; grid-template-columns:1fr 360px; gap:18px}
+  .timeline{list-style:none; padding:0; margin:0}
+  .timeline li{padding:10px 0; border-left:3px solid var(--accent); margin-left:12px; padding-left:12px}
+  .skill{display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #eee}
+  footer{font-size:.9rem; color:var(--muted); text-align:center; padding:18px 0}
+  /* Streams area */
+  .streams{display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start}
+  .stream-box{width:340px; border-radius:10px; overflow:hidden; background:#fff; border:1px solid rgba(0,0,0,.06); box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .stream-head{padding:10px; background:#fafafa; display:flex; justify-content:space-between; align-items:center}
   .stream-body{background:#000}
-  video, iframe, img.mjpeg{width:100%;height:200px;display:block;object-fit:cover;background:#000;border:0}
-  .controls{display:flex;gap:8px;padding:8px;align-items:center}
-  .controls button{padding:6px 8px;border-radius:6px;border:0;background:var(--accent2);color:#fff;cursor:pointer}
-  .controls button.secondary{background:#fff;color:var(--accent2);border:1px solid rgba(43,108,176,.12)}
-  .status{margin-left:auto;color:var(--muted);font-size:.9rem}
-  .snap{display:none;padding:8px;border-top:1px solid #eee}
-  .snap img{width:100%;height:auto;border-radius:6px}
-  .config{display:flex;gap:8px;align-items:center;margin-top:8px}
-  input[type="text"]{flex:1;padding:8px;border-radius:6px;border:1px solid #ddd}
-  .note{color:var(--muted);font-size:.9rem;margin-top:6px}
-  @media(max-width:760px){.streams{justify-content:center}}
+  video, iframe, img.mjpeg{width:100%; height:200px; display:block; object-fit:cover; background:#000; border:0}
+  .controls{display:flex; gap:8px; padding:8px; align-items:center}
+  .controls button{padding:6px 10px; border-radius:6px; border:0; background:var(--accent2); color:#fff; cursor:pointer; font-weight:600}
+  .controls button.secondary{background:#fff; color:var(--accent2); border:1px solid rgba(43,108,176,.12)}
+  .status{margin-left:auto; color:var(--muted); font-size:.9rem}
+  .snap{display:none; padding:8px; border-top:1px solid #eee}
+  .snap img{width:100%; height:auto; border-radius:6px}
+  .config{display:flex; gap:8px; align-items:center; margin-top:8px}
+  input[type="text"]{flex:1; padding:8px; border-radius:6px; border:1px solid #ddd}
+  .note{color:var(--muted); font-size:.9rem; margin-top:6px}
+  @media(max-width:980px){ .grid{grid-template-columns:1fr} .stream-box{width:100%} }
 </style>
 </head>
 <body>
@@ -39,85 +55,135 @@
     <div class="avatar">DD</div>
     <div>
       <h1>Desmon Donald Siagian</h1>
-      <div class="meta">Guru Fisika • Geophysics Engineering (ITB) • Bandung</div>
+      <div class="meta">Guru Fisika — Geophysics Engineering (ITB) — Bandung</div>
+      <nav>
+        <a href="#about">Tentang</a>
+        <a href="#experience">Pengalaman</a>
+        <a href="#works">Aktivitas</a>
+        <a href="#contact">Kontak</a>
+      </nav>
     </div>
   </div>
 </header>
 
 <main class="container">
-  <section class="card">
+  <!-- About -->
+  <section id="about" class="card">
     <h2>Tentang Saya</h2>
-    <p><strong>Nama:</strong> DESMON DONALD SIAGIAN</p>
-    <p><strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, Taman Sari, Bandung</p>
+    <p><strong>Nama:</strong> Desmon Donald Siagian</p>
+    <p><strong>Alamat:</strong> JL. Kebun Kembang, Gang Kenanga No.8, Taman Sari, Bandung, Jawa Barat</p>
+    <p>Saya seorang guru Fisika dengan latar belakang Geophysics Engineering dari Institut Teknologi Bandung (ITB). Aktif dalam pengembangan laboratorium, pelatihan guru, dan kegiatan organisasi kemasyarakatan.</p>
   </section>
 
-  <section class="card">
-    <h3>Live Streams</h3>
+  <div class="grid">
+    <div>
+      <!-- Experience -->
+      <section id="experience" class="card">
+        <h3>Pengalaman Kerja & Pendidikan</h3>
+        <ul class="timeline">
+          <li><strong>Guru</strong> — SMA BPK Penabur Holis (2016 — sekarang)</li>
+          <li><strong>Account Officer</strong> — PT Bank Mega, Tbk (2011 — 2014)</li>
+          <li><strong>PT Smart Mediaware (LAPI ITB)</strong> (2009 — 2010)</li>
+          <li><strong>Geophysics Engineering</strong> — Institut Teknologi Bandung (2003 — 2009)</li>
+        </ul>
+      </section>
 
-    <div class="config">
-      <label style="font-weight:600">Secure stream URL (HTTPS, optional):</label>
-      <input id="secureUrl" type="text" placeholder="https://xxxx.ngrok.io/stream.m3u8 atau https://stream.example.com/stream.m3u8">
-      <button id="applySecure" class="secondary">Gunakan</button>
-      <button id="resetBtn" class="secondary">Reset ke 10.101.209.98</button>
+      <!-- Activities -->
+      <section id="works" class="card">
+        <h3>Aktivitas & Pelatihan</h3>
+        <p>Beberapa kegiatan: Laboratory Management Workshop (2024), Teacher Creativity Seminar (2023), PENABUR EDU SUMMIT (2022), pelatihan Kurikulum 2013.</p>
+      </section>
+
+      <!-- Lembar Kerja / CV -->
+      <section class="card">
+        <h3>Materi & CV</h3>
+        <p class="note">Unggah file PDF CV Anda ke server lalu perbarui link di bawah untuk mengaktifkan unduhan.</p>
+        <p><a id="downloadCv" href="#" onclick="alert('Unggah file PDF CV Anda dan perbarui atribut href link ini.'); return false;">Unduh CV (PDF)</a></p>
+      </section>
     </div>
 
-    <p class="note">
-      Jika kosong, halaman akan mencoba langsung ke <code>http://10.101.209.98/</code>. Untuk publik, gunakan HTTPS (ngrok atau proxy).  
-      Jika kamera memakai RTSP, konversi RTSP→HLS diperlukan (ffmpeg).
-    </p>
+    <aside>
+      <!-- Streams + webcam -->
+      <section class="card">
+        <h3>Live Stream & Webcam</h3>
 
-    <div class="streams" style="margin-top:12px">
-      <!-- Remote stream -->
-      <div class="stream-box" id="remoteBox">
-        <div class="stream-head"><strong>Remote Stream</strong><small style="color:var(--muted)">http://10.101.209.98</small></div>
-        <div class="stream-body" id="remoteBody">
-          <video id="remoteVideo" playsinline controls muted></video>
-          <img id="remoteMJPEG" class="mjpeg" style="display:none" alt="MJPEG">
-          <iframe id="remoteIframe" style="display:none" title="remote fallback"></iframe>
+        <div class="config">
+          <label style="font-weight:600">Secure stream URL (HTTPS, optional):</label>
+          <input id="secureUrl" type="text" placeholder="https://example.ngrok.io/stream.m3u8 atau kosong untuk http://10.101.209.98/">
+          <button id="applySecure" class="secondary">Gunakan</button>
+          <button id="resetBtn" class="secondary">Reset</button>
         </div>
-        <div class="controls">
-          <button id="remotePlay">Pause</button>
-          <button id="remoteMute" class="secondary">Unmute</button>
-          <button id="remoteSnap" class="secondary">Snapshot</button>
-          <button id="remoteFS" class="secondary">Fullscreen</button>
-          <div class="status" id="remoteStatus">Memuat…</div>
-        </div>
-        <div class="snap" id="remoteSnapWrap"><img id="remoteSnapImg" alt="snapshot remote"></div>
-      </div>
 
-      <!-- Local webcam -->
-      <div class="stream-box" id="localBox">
-        <div class="stream-head"><strong>Webcam Laptop</strong><small style="color:var(--muted)">Local camera</small></div>
-        <div class="stream-body">
-          <video id="localVideo" playsinline autoplay muted></video>
-        </div>
-        <div class="controls">
-          <button id="localPlay">Pause</button>
-          <button id="localMute" class="secondary">Unmute</button>
-          <button id="localSnap" class="secondary">Snapshot</button>
-          <button id="localFS" class="secondary">Fullscreen</button>
-          <div class="status" id="localStatus">Menunggu izin kamera…</div>
-        </div>
-        <div class="snap" id="localSnapWrap"><img id="localSnapImg" alt="snapshot local"></div>
-      </div>
-    </div>
-  </section>
+        <p class="note">Jika halaman di‑host lewat HTTPS, masukkan URL HTTPS (ngrok atau proxy). Jika kosong, sistem mencoba langsung ke <code>http://10.101.209.98/</code>.</p>
 
-  <section class="card">
-    <h3>Kontak</h3>
-    <p>Email: desmon.spencer@gmail.com • Tel: 089697819495</p>
-  </section>
+        <div class="streams" style="margin-top:12px">
+          <!-- Remote stream -->
+          <div class="stream-box" id="remoteBox">
+            <div class="stream-head">
+              <strong>Remote Stream</strong>
+              <small style="color:var(--muted)">http://10.101.209.98/</small>
+            </div>
+            <div class="stream-body" id="remoteBody">
+              <video id="remoteVideo" playsinline controls muted></video>
+              <img id="remoteMJPEG" class="mjpeg" style="display:none" alt="MJPEG stream">
+              <iframe id="remoteIframe" style="display:none" title="remote fallback"></iframe>
+            </div>
+            <div class="controls">
+              <button id="remotePlay">Pause</button>
+              <button id="remoteMute" class="secondary">Unmute</button>
+              <button id="remoteSnap" class="secondary">Snapshot</button>
+              <button id="remoteFS" class="secondary">Fullscreen</button>
+              <div class="status" id="remoteStatus">Memuat…</div>
+            </div>
+            <div class="snap" id="remoteSnapWrap"><img id="remoteSnapImg" alt="snapshot remote"></div>
+          </div>
+
+          <!-- Local webcam -->
+          <div class="stream-box" id="localBox">
+            <div class="stream-head">
+              <strong>Webcam Laptop</strong>
+              <small style="color:var(--muted)">Local camera</small>
+            </div>
+            <div class="stream-body">
+              <video id="localVideo" playsinline autoplay muted></video>
+            </div>
+            <div class="controls">
+              <button id="localPlay">Pause</button>
+              <button id="localMute" class="secondary">Unmute</button>
+              <button id="localSnap" class="secondary">Snapshot</button>
+              <button id="localFS" class="secondary">Fullscreen</button>
+              <div class="status" id="localStatus">Menunggu izin kamera…</div>
+            </div>
+            <div class="snap" id="localSnapWrap"><img id="localSnapImg" alt="snapshot local"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="card">
+        <h3>Kontak</h3>
+        <p><strong>Email:</strong> desmon.spencer@gmail.com</p>
+        <p><strong>Telepon:</strong> 089697819495</p>
+        <p class="note">Sesuaikan kontak jika diperlukan sebelum publikasi.</p>
+      </section>
+    </aside>
+  </div>
 </main>
 
-<footer style="text-align:center;padding:18px;color:var(--muted)">Jalankan lokal via HTTP untuk uji cepat atau gunakan HTTPS proxy/ngrok untuk publik.</footer>
+<footer>
+  <div class="container small muted">Halaman ini menampilkan CV interaktif dan live stream. Untuk publik, pastikan stream tersedia lewat HTTPS atau gunakan proxy/ngrok.</div>
+</footer>
 
+<!-- HLS.js (untuk .m3u8 jika diperlukan) -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
 <script>
-/* CONFIG */
+/* CONFIG: jika streaming sudah berjalan di http://10.101.209.98/ biarkan SECURE_HLS kosong.
+   Jika Anda punya endpoint HTTPS (ngrok atau proxy), masukkan ke input 'Secure stream URL' lalu klik Gunakan.
+*/
 const HTTP_BASE = 'http://10.101.209.98/';
 let SECURE_HLS = ''; // akan diisi dari input jika pengguna memasukkan URL HTTPS
 
-/* ELEMENTS */
+/* Elements */
 const remoteVideo = document.getElementById('remoteVideo');
 const remoteMJPEG = document.getElementById('remoteMJPEG');
 const remoteIframe = document.getElementById('remoteIframe');
@@ -142,15 +208,12 @@ const secureInput = document.getElementById('secureUrl');
 const applySecure = document.getElementById('applySecure');
 const resetBtn = document.getElementById('resetBtn');
 
-function setRemoteStatus(t){ remoteStatus.textContent = t; }
-function setLocalStatus(t){ localStatus.textContent = t; }
-
-/* quick reachability test using fetch HEAD (best-effort) */
+/* Utility: best-effort reachability test */
 async function reachable(url, timeout=3000){
   try {
     const controller = new AbortController();
     const id = setTimeout(()=>controller.abort(), timeout);
-    // mode:no-cors used to avoid CORS blocking; success means likely reachable
+    // mode:no-cors to avoid CORS blocking; if fetch resolves, assume reachable
     await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
     clearTimeout(id);
     return true;
@@ -161,7 +224,7 @@ async function reachable(url, timeout=3000){
 
 /* Initialize remote stream */
 async function initRemote(){
-  setRemoteStatus('Memeriksa sumber stream…');
+  remoteStatus.textContent = 'Memeriksa sumber stream…';
   // prefer HTTPS HLS if provided
   if(SECURE_HLS && SECURE_HLS.startsWith('https://')){
     try {
@@ -169,18 +232,18 @@ async function initRemote(){
         const hls = new Hls();
         hls.loadSource(SECURE_HLS);
         hls.attachMedia(remoteVideo);
-        hls.on(Hls.Events.MANIFEST_PARSED, ()=> { remoteVideo.play().catch(()=>{}); setRemoteStatus('Live (HLS HTTPS)'); });
-        hls.on(Hls.Events.ERROR, (e,d)=> { console.warn('HLS error', e, d); setRemoteStatus('Error HLS'); });
+        hls.on(Hls.Events.MANIFEST_PARSED, ()=> { remoteVideo.play().catch(()=>{}); remoteStatus.textContent = 'Live (HLS HTTPS)'; });
+        hls.on(Hls.Events.ERROR, (e,d)=> { console.warn('HLS error', e, d); remoteStatus.textContent = 'Error HLS'; });
         return;
       } else {
         remoteVideo.src = SECURE_HLS;
         remoteVideo.addEventListener('loadeddata', ()=> remoteVideo.play().catch(()=>{}));
-        setRemoteStatus('Live (HTTPS source)');
+        remoteStatus.textContent = 'Live (HTTPS source)';
         return;
       }
     } catch(e){
       console.warn('HTTPS HLS gagal', e);
-      setRemoteStatus('HTTPS HLS gagal, mencoba sumber lain');
+      remoteStatus.textContent = 'HTTPS HLS gagal, mencoba sumber lain';
     }
   }
 
@@ -201,28 +264,28 @@ async function initRemote(){
         const hls = new Hls();
         hls.loadSource(c);
         hls.attachMedia(remoteVideo);
-        hls.on(Hls.Events.MANIFEST_PARSED, ()=> { remoteVideo.play().catch(()=>{}); setRemoteStatus('Live (HLS HTTP)'); });
+        hls.on(Hls.Events.MANIFEST_PARSED, ()=> { remoteVideo.play().catch(()=>{}); remoteStatus.textContent = 'Live (HLS HTTP)'; });
         return;
       }
       if(c.endsWith('.mp4')){
         remoteVideo.src = c;
-        remoteVideo.addEventListener('loadeddata', ()=> { remoteVideo.play().catch(()=>{}); setRemoteStatus('Live (MP4)'); });
+        remoteVideo.addEventListener('loadeddata', ()=> { remoteVideo.play().catch(()=>{}); remoteStatus.textContent = 'Live (MP4)'; });
         return;
       }
       if(c.includes('action=stream') || c.includes('stream')){
         remoteMJPEG.src = c; remoteMJPEG.style.display='block'; remoteVideo.style.display='none';
-        setRemoteStatus('Live (MJPEG)');
+        remoteStatus.textContent = 'Live (MJPEG)';
         return;
       }
       // fallback iframe to base URL
       remoteIframe.src = c; remoteIframe.style.display='block'; remoteVideo.style.display='none';
-      setRemoteStatus('Fallback iframe (cek path)');
+      remoteStatus.textContent = 'Fallback iframe (cek path)';
       return;
     } catch(err){
       console.warn('candidate error', c, err);
     }
   }
-  setRemoteStatus('Tidak dapat menemukan sumber yang cocok. Periksa jaringan atau gunakan HTTPS proxy/ngrok.');
+  remoteStatus.textContent = 'Tidak dapat menemukan sumber yang cocok. Periksa jaringan atau gunakan HTTPS proxy/ngrok.';
 }
 
 /* Initialize local webcam */
@@ -231,14 +294,14 @@ async function initLocal(){
     const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
     localVideo.srcObject = stream;
     localVideo.play().catch(()=>{});
-    setLocalStatus('Live (webcam)');
+    localStatus.textContent = 'Live (webcam)';
   } catch(err){
     console.warn('getUserMedia error', err);
-    setLocalStatus('Tidak dapat mengakses kamera: ' + (err && err.message ? err.message : 'izin ditolak'));
+    localStatus.textContent = 'Tidak dapat mengakses kamera: ' + (err && err.message ? err.message : 'izin ditolak');
   }
 }
 
-/* Controls: remote */
+/* Remote controls */
 remotePlay.addEventListener('click', ()=> {
   if(remoteVideo.paused){ remoteVideo.play().catch(()=>{}); remotePlay.textContent='Pause'; }
   else { remoteVideo.pause(); remotePlay.textContent='Play'; }
@@ -246,22 +309,22 @@ remotePlay.addEventListener('click', ()=> {
 remoteMute.addEventListener('click', ()=>{ remoteVideo.muted = !remoteVideo.muted; remoteMute.textContent = remoteVideo.muted ? 'Unmute' : 'Mute'; });
 remoteSnap.addEventListener('click', ()=>{
   try {
-    if(remoteVideo.style.display === 'none' || remoteVideo.readyState < 2){ setRemoteStatus('Snapshot tidak tersedia'); return; }
+    if(remoteVideo.style.display === 'none' || remoteVideo.readyState < 2){ remoteStatus.textContent = 'Snapshot tidak tersedia'; return; }
     const w = remoteVideo.videoWidth || 640, h = remoteVideo.videoHeight || 360;
     const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
     canvas.getContext('2d').drawImage(remoteVideo,0,0,w,h);
     remoteSnapImg.src = canvas.toDataURL('image/png');
     remoteSnapWrap.style.display='block';
-    setRemoteStatus('Snapshot diambil');
-  } catch(e){ console.warn(e); setRemoteStatus('Snapshot gagal (CORS)'); }
+    remoteStatus.textContent = 'Snapshot diambil';
+  } catch(e){ console.warn(e); remoteStatus.textContent = 'Snapshot gagal (CORS)'; }
 });
 remoteFS.addEventListener('click', async ()=>{
   const el = document.getElementById('remoteBox') || document.body;
-  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> setRemoteStatus('Fullscreen tidak tersedia'));
+  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> remoteStatus.textContent = 'Fullscreen tidak tersedia');
   else document.exitFullscreen();
 });
 
-/* Controls: local */
+/* Local controls */
 localPlay.addEventListener('click', ()=>{
   if(localVideo.paused){ localVideo.play().catch(()=>{}); localPlay.textContent='Pause'; }
   else { localVideo.pause(); localPlay.textContent='Play'; }
@@ -269,27 +332,27 @@ localPlay.addEventListener('click', ()=>{
 localMute.addEventListener('click', ()=>{ localVideo.muted = !localVideo.muted; localMute.textContent = localVideo.muted ? 'Unmute' : 'Mute'; });
 localSnap.addEventListener('click', ()=>{
   try {
-    if(localVideo.style.display === 'none' || localVideo.readyState < 2){ setLocalStatus('Snapshot tidak tersedia'); return; }
+    if(localVideo.style.display === 'none' || localVideo.readyState < 2){ localStatus.textContent = 'Snapshot tidak tersedia'; return; }
     const w = localVideo.videoWidth || 640, h = localVideo.videoHeight || 360;
     const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
     canvas.getContext('2d').drawImage(localVideo,0,0,w,h);
     localSnapImg.src = canvas.toDataURL('image/png');
     localSnapWrap.style.display='block';
-    setLocalStatus('Snapshot diambil');
-  } catch(e){ console.warn(e); setLocalStatus('Snapshot gagal'); }
+    localStatus.textContent = 'Snapshot diambil';
+  } catch(e){ console.warn(e); localStatus.textContent = 'Snapshot gagal'; }
 });
 localFS.addEventListener('click', async ()=>{
   const el = document.getElementById('localBox') || document.body;
-  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> setLocalStatus('Fullscreen tidak tersedia'));
+  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> localStatus.textContent = 'Fullscreen tidak tersedia');
   else document.exitFullscreen();
 });
 
-/* Apply secure URL button */
+/* Apply secure URL */
 applySecure.addEventListener('click', ()=>{
   const v = secureInput.value.trim();
   if(v){
     SECURE_HLS = v;
-    // reset remote UI
+    // reset UI
     remoteVideo.src = '';
     remoteVideo.style.display = '';
     remoteMJPEG.style.display = 'none';
