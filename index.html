@@ -4,17 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Desmon Donald Siagian — CV Interaktif & Live Stream</title>
+<link rel="icon" href="" />
 <style>
-  :root{
-    --accent:#0b3d91;
-    --accent-2:#2b6cb0;
-    --muted:#666;
-    --card:#fff;
-    --bg:#f6f8fb;
-  }
+  :root{--accent:#0b3d91;--accent2:#2b6cb0;--muted:#666;--bg:#f6f8fb;--card:#fff}
   *{box-sizing:border-box}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:var(--bg);color:#222;line-height:1.45}
-  header{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;padding:28px 16px;position:relative}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:var(--bg);color:#222}
+  header{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:28px 16px;position:relative}
   .container{max-width:1100px;margin:18px auto;padding:0 16px}
   .hero{display:flex;gap:18px;align-items:center}
   .avatar{width:120px;height:120px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:20px}
@@ -30,38 +25,21 @@
   .skill{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
   footer{font-size:.9rem;color:var(--muted);text-align:center;padding:18px 0}
   /* Video widget (pojok kanan atas) */
-  .video-widget{
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:340px;
-    max-width:calc(100% - 24px);
-    border-radius:10px;
-    overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,.18);
-    background:#fff;
-    border:1px solid rgba(0,0,0,.06);
-    z-index:60;
-  }
+  .video-widget{position:absolute;top:12px;right:12px;width:340px;max-width:calc(100% - 24px);border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.18);background:#fff;border:1px solid rgba(0,0,0,.06);z-index:60}
   .video-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.95)}
   .video-header .title{font-weight:700;color:var(--accent)}
   .video-body{position:relative;background:#000}
   video, iframe, img.mjpeg{display:block;width:100%;height:190px;object-fit:cover;background:#000;border:0}
   .controls{display:flex;gap:8px;padding:8px;align-items:center}
-  .controls button{background:var(--accent-2);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:600}
-  .controls button.secondary{background:#fff;color:var(--accent-2);border:1px solid rgba(43,108,176,.12)}
+  .controls button{background:var(--accent2);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:600}
+  .controls button.secondary{background:#fff;color:var(--accent2);border:1px solid rgba(43,108,176,.12)}
   .controls .status{margin-left:auto;color:var(--muted);font-size:.9rem}
   .snapshot{display:none;padding:8px;border-top:1px solid #eee}
   .snapshot img{width:100%;height:auto;border-radius:6px}
   @media(max-width:900px){.grid{grid-template-columns:1fr}}
-  @media(max-width:720px){
-    header{padding-bottom:140px}
-    .video-widget{position:static;margin:12px;border-radius:8px}
-  }
-  /* small helpers */
+  @media(max-width:720px){header{padding-bottom:140px}.video-widget{position:static;margin:12px;border-radius:8px}}
   .muted{color:var(--muted)}
   .small{font-size:.9rem}
-  pre{background:#f3f4f6;padding:8px;border-radius:6px;overflow:auto}
 </style>
 </head>
 <body>
@@ -88,9 +66,11 @@
     </div>
 
     <div class="video-body" id="videoBody">
-      <!-- <video> untuk HLS/MP4; MJPEG fallback menggunakan <img>; iframe fallback terakhir -->
+      <!-- Video (HLS) -->
       <video id="liveVideo" playsinline controls muted></video>
+      <!-- MJPEG fallback -->
       <img id="mjpegImg" class="mjpeg" style="display:none" alt="MJPEG stream">
+      <!-- iframe fallback -->
       <iframe id="iframeFallback" style="display:none" title="stream fallback"></iframe>
     </div>
 
@@ -130,7 +110,7 @@
 
       <section class="card">
         <h3>Aktivitas & Pelatihan</h3>
-        <p>Beberapa pelatihan dan seminar: Laboratory Management Workshop (2024), Teacher Creativity Seminar (2023), PENABUR EDU SUMMIT (2022), dan pelatihan guru Kurikulum 2013.</p>
+        <p>Laboratory Management Workshop (2024), Teacher Creativity Seminar (2023), PENABUR EDU SUMMIT (2022), pelatihan Kurikulum 2013.</p>
       </section>
 
       <section id="skills" class="card">
@@ -141,8 +121,8 @@
       </section>
 
       <section class="card">
-        <h3>Lembar Kerja Singkat (Contoh)</h3>
-        <p class="small muted">Gunakan bagian ini untuk menaruh link PDF CV, materi, atau lembar kerja yang bisa diunduh.</p>
+        <h3>Lembar Kerja & CV</h3>
+        <p class="small muted">Unggah PDF CV dan materi di server Anda lalu perbarui link di bawah.</p>
         <p><a href="#" id="downloadCv">Unduh CV (PDF)</a></p>
       </section>
     </div>
@@ -152,7 +132,6 @@
         <h3>Kontak</h3>
         <p><strong>Email:</strong> desmon.spencer@gmail.com</p>
         <p><strong>Telepon:</strong> 089697819495</p>
-        <p class="small muted">Sesuaikan alamat email/telepon jika perlu.</p>
       </section>
 
       <section class="card">
@@ -165,19 +144,19 @@
 </main>
 
 <footer>
-  <div class="container small muted">Halaman ini dibuat untuk menampilkan CV interaktif dan live stream. Pastikan jaringan Anda dapat mengakses alamat stream.</div>
+  <div class="container small muted">Halaman ini menampilkan CV interaktif dan live stream. Pastikan stream tersedia lewat HTTPS.</div>
 </footer>
 
-<!-- hls.js CDN (untuk HLS playback di browser yang tidak native) -->
+<!-- hls.js CDN untuk HLS playback -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
 <script>
 /*
   PENTING:
-  - Ganti VIDEO_SRC jika stream menggunakan path/port lain.
-  - Jika stream adalah RTSP, browser tidak memutar langsung. Gunakan ffmpeg atau gateway RTSP->HLS.
-  - Contoh path umum dicantumkan di candidates[].
+  - Pastikan stream tersedia lewat HTTPS untuk menghindari Mixed Content.
+  - Ganti SECURE_STREAM_URL dengan URL HTTPS stream Anda (contoh: 'https://stream.example.com/stream.m3u8').
+  - Jika stream adalah RTSP, konversi ke HLS (ffmpeg) atau gunakan proxy yang menyediakan HTTPS.
 */
-const VIDEO_SRC = 'http://10.101.209.98'; // Ganti jika perlu, mis. 'http://10.101.209.98:8080/stream.m3u8'
+const SECURE_STREAM_URL = 'https://stream.example.com/stream.m3u8'; // <-- GANTI DENGAN HTTPS STREAM ANDA
 
 const video = document.getElementById('liveVideo');
 const mjpegImg = document.getElementById('mjpegImg');
@@ -192,90 +171,65 @@ const snapshotImg = document.getElementById('snapshotImg');
 
 function setStatus(t){ status.textContent = t; }
 
-/* Heuristik: coba beberapa kandidat path umum */
-const candidates = [
-  VIDEO_SRC,
-  VIDEO_SRC + '/stream.m3u8',
-  VIDEO_SRC + '/hls/stream.m3u8',
-  VIDEO_SRC + '/video.mp4',
-  VIDEO_SRC + ':8080/?action=stream',
-  VIDEO_SRC + ':8080/stream',
-  VIDEO_SRC + ':8000/stream.m3u8',
-  VIDEO_SRC + '/?action=stream'
-];
+/* Inisialisasi pemutaran HLS (HTTPS) */
+(function init(){
+  if(!SECURE_STREAM_URL || SECURE_STREAM_URL === '' || SECURE_STREAM_URL.startsWith('http://')){
+    setStatus('Periksa SECURE_STREAM_URL (harus HTTPS).');
+    // tampilkan iframe fallback jika HTTPS tidak tersedia
+    if(SECURE_STREAM_URL && SECURE_STREAM_URL.startsWith('http://')){
+      iframe.src = SECURE_STREAM_URL;
+      iframe.style.display = 'block';
+      video.style.display = 'none';
+      mjpegImg.style.display = 'none';
+    }
+    return;
+  }
 
-function tryHLS(src){
-  if(!src) return false;
-  if(src.includes('.m3u8')){
+  // Jika URL mengandung .m3u8 gunakan hls.js
+  if(SECURE_STREAM_URL.includes('.m3u8')){
     if(Hls.isSupported()){
-      const hls = new Hls();
-      hls.loadSource(src);
+      const hls = new Hls({maxBufferLength: 30});
+      hls.loadSource(SECURE_STREAM_URL);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, ()=> { video.play().catch(()=>{}); setStatus('Live (HLS)'); });
-      hls.on(Hls.Events.ERROR, (e,d)=> console.warn('HLS error', e, d));
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        console.warn('HLS error', event, data);
+        setStatus('Error HLS: ' + (data && data.type ? data.type : 'unknown'));
+      });
     } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-      video.src = src;
+      video.src = SECURE_STREAM_URL;
       video.addEventListener('loadedmetadata', ()=> video.play().catch(()=>{}));
       setStatus('Live (HLS native)');
+    } else {
+      setStatus('Browser tidak mendukung HLS');
     }
-    return true;
+    return;
   }
-  return false;
-}
 
-function tryMP4(src){
-  if(!src) return false;
-  if(src.endsWith('.mp4') || src.includes('.mp4')){
-    video.src = src;
+  // Jika URL menunjuk ke file mp4
+  if(SECURE_STREAM_URL.endsWith('.mp4')){
+    video.src = SECURE_STREAM_URL;
     video.addEventListener('loadeddata', ()=> { video.play().catch(()=>{}); setStatus('Live (MP4)'); });
     video.addEventListener('error', ()=> setStatus('MP4 tidak dapat diputar'));
-    return true;
+    return;
   }
-  return false;
-}
 
-function tryMJPEG(src){
-  if(!src) return false;
-  // heuristik: endpoint MJPEG sering mengandung 'stream' atau 'mjpg' atau 'action=stream'
-  if(src.includes('mjpeg') || src.includes('mjpg') || src.includes('action=stream') || src.includes('stream')){
-    mjpegImg.src = src;
+  // Jika URL MJPEG (heuristik)
+  if(SECURE_STREAM_URL.includes('mjpeg') || SECURE_STREAM_URL.includes('mjpg') || SECURE_STREAM_URL.includes('action=stream')){
+    mjpegImg.src = SECURE_STREAM_URL;
     mjpegImg.style.display = 'block';
     video.style.display = 'none';
     iframe.style.display = 'none';
     setStatus('Live (MJPEG)');
-    return true;
+    return;
   }
-  return false;
-}
 
-function tryIframe(src){
-  iframe.src = src;
+  // fallback iframe
+  iframe.src = SECURE_STREAM_URL;
   iframe.style.display = 'block';
   video.style.display = 'none';
   mjpegImg.style.display = 'none';
   setStatus('Fallback iframe (cek path)');
-}
-
-/* Inisialisasi: coba kandidat */
-(function init(){
-  let used=false;
-  for(const c of candidates){
-    try {
-      if(tryHLS(c) || tryMP4(c) || tryMJPEG(c)){ used=true; break; }
-    } catch(e){
-      console.warn('coba kandidat gagal', c, e);
-    }
-  }
-  if(!used){
-    tryIframe(VIDEO_SRC);
-    setStatus('Coba fallback; periksa protokol/path dan jaringan');
-  }
-
-  // event listeners
-  video.addEventListener('playing', ()=> setStatus('Live'));
-  video.addEventListener('pause', ()=> setStatus('Terhenti'));
-  video.addEventListener('loadeddata', ()=> setStatus('Siap'));
-  video.addEventListener('error', ()=> setStatus('Error memuat video'));
 })();
 
 /* Kontrol UI */
@@ -287,7 +241,6 @@ btnMute.addEventListener('click', ()=>{ video.muted = !video.muted; btnMute.text
 
 btnSnapshot.addEventListener('click', ()=>{
   try {
-    // Jika video tidak terlihat (iframe/MJPEG), snapshot mungkin tidak tersedia
     if(video.style.display === 'none' || video.readyState < 2){
       setStatus('Snapshot tidak tersedia untuk sumber ini');
       return;
@@ -317,27 +270,11 @@ btnFullscreen.addEventListener('click', async ()=>{
   }
 });
 
-/* Link unduh CV (placeholder) */
+/* Placeholder unduh CV */
 document.getElementById('downloadCv').addEventListener('click', (e)=>{
   e.preventDefault();
-  alert('Silakan unggah file PDF CV Anda ke server dan perbarui atribut href link ini.');
+  alert('Unggah file PDF CV Anda ke server dan perbarui atribut href link ini.');
 });
 </script>
-
-<!-- Petunjuk singkat untuk admin/teknisi (tidak ditampilkan di UI) -->
-<!--
-  Jika stream Anda adalah RTSP (contoh: rtsp://10.101.209.98:554/stream), browser tidak memutar langsung.
-  Contoh konversi RTSP -> HLS menggunakan ffmpeg (jalankan di server yang dapat mengakses kamera):
-
-  ffmpeg -i "rtsp://10.101.209.98:554/your_rtsp_path" \
-    -c:v copy -c:a aac -f hls \
-    -hls_time 2 -hls_list_size 3 -hls_flags delete_segments \
-    /var/www/html/stream/stream.m3u8
-
-  Setelah itu akses HLS di browser: http://<server>/stream/stream.m3u8
-  Pastikan server mengirim header CORS jika halaman dan stream berada di domain berbeda:
-    Access-Control-Allow-Origin: *
--->
-
 </body>
 </html>
