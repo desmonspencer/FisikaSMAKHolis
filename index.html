@@ -3,25 +3,32 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Desmon Donald Siagian — CV & Live Stream</title>
+<title>Desmon Donald Siagian — CV & Live Streams</title>
 <style>
   :root{--accent:#0b3d91;--accent2:#2b6cb0;--muted:#666;--bg:#f6f8fb;--card:#fff}
   *{box-sizing:border-box}
   body{font-family:system-ui,Arial;margin:0;background:var(--bg);color:#222}
-  header{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:28px 16px;position:relative}
+  header{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:20px 16px;position:relative}
   .container{max-width:1100px;margin:18px auto;padding:0 16px}
   .hero{display:flex;gap:18px;align-items:center}
-  .avatar{width:120px;height:120px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800}
-  h1{margin:.2rem 0;font-size:1.6rem}
+  .avatar{width:96px;height:96px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800}
+  h1{margin:.2rem 0;font-size:1.4rem}
   .meta{color:rgba(255,255,255,.95);font-size:.95rem}
-  .video-widget{position:absolute;top:12px;right:12px;width:340px;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.18);background:#fff;border:1px solid rgba(0,0,0,.06);z-index:60}
-  .video-body{background:#000}
-  video, img.mjpeg, iframe{width:100%;height:190px;display:block;object-fit:cover;background:#000;border:0}
+  nav a{color:#fff;margin-right:12px;text-decoration:none;font-weight:600}
+  main{max-width:1100px;margin:18px auto;padding:0 16px}
+  .card{background:#fff;padding:14px;margin:12px 0;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .streams{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+  .stream-box{width:340px;border-radius:10px;overflow:hidden;background:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .stream-head{padding:8px 10px;background:#fafafa;display:flex;justify-content:space-between;align-items:center}
+  .stream-body{background:#000}
+  video, iframe, img.mjpeg{width:100%;height:200px;display:block;object-fit:cover;background:#000;border:0}
   .controls{display:flex;gap:8px;padding:8px;align-items:center}
-  .controls button{padding:6px 10px;border-radius:6px;border:0;background:var(--accent2);color:#fff;cursor:pointer}
+  .controls button{padding:6px 8px;border-radius:6px;border:0;background:var(--accent2);color:#fff;cursor:pointer}
   .controls button.secondary{background:#fff;color:var(--accent2);border:1px solid rgba(43,108,176,.12)}
   .status{margin-left:auto;color:var(--muted);font-size:.9rem}
-  .card{background:#fff;padding:16px;margin:12px 0;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .snap{display:none;padding:8px;border-top:1px solid #eee}
+  .snap img{width:100%;height:auto;border-radius:6px}
+  @media(max-width:760px){.streams{justify-content:center}}
 </style>
 </head>
 <body>
@@ -31,84 +38,118 @@
     <div>
       <h1>Desmon Donald Siagian</h1>
       <div class="meta">Guru Fisika • Geophysics Engineering (ITB) • Bandung</div>
-    </div>
-  </div>
-
-  <div class="video-widget" id="videoWidget">
-    <div style="padding:8px 12px;background:#fff;display:flex;justify-content:space-between;align-items:center">
-      <strong style="color:var(--accent)">Live Stream</strong>
-      <small style="color:var(--muted)">Kamera Profil</small>
-    </div>
-    <div class="video-body" id="videoBody">
-      <video id="player" playsinline controls muted></video>
-      <img id="mjpeg" class="mjpeg" style="display:none" alt="MJPEG stream">
-      <iframe id="iframe" style="display:none" title="stream fallback"></iframe>
-    </div>
-    <div class="controls">
-      <button id="playBtn">Pause</button>
-      <button id="muteBtn" class="secondary">Unmute</button>
-      <button id="snapBtn" class="secondary">Ambil Snapshot</button>
-      <button id="fsBtn" class="secondary">Fullscreen</button>
-      <div class="status" id="status">Memuat…</div>
-    </div>
-    <div id="snapWrap" style="display:none;padding:8px;border-top:1px solid #eee">
-      <img id="snapImg" style="width:100%;border-radius:6px" alt="Snapshot">
+      <nav>
+        <a href="#about">Tentang</a><a href="#contact">Kontak</a>
+      </nav>
     </div>
   </div>
 </header>
 
-<main class="container" style="padding-top:120px">
-  <section class="card">
+<main class="container">
+  <section id="about" class="card">
     <h2>Tentang Saya</h2>
     <p><strong>Nama:</strong> DESMON DONALD SIAGIAN</p>
     <p><strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, Taman Sari, Bandung</p>
   </section>
+
   <section class="card">
+    <h3>Live Streams</h3>
+    <div class="streams">
+      <!-- Remote stream box -->
+      <div class="stream-box" id="remoteBox">
+        <div class="stream-head"><strong>Remote Stream</strong><small style="color:var(--muted)">http://10.101.209.98</small></div>
+        <div class="stream-body" id="remoteBody">
+          <video id="remoteVideo" playsinline controls muted></video>
+          <img id="remoteMJPEG" class="mjpeg" style="display:none" alt="MJPEG">
+          <iframe id="remoteIframe" style="display:none" title="remote fallback"></iframe>
+        </div>
+        <div class="controls">
+          <button id="remotePlay">Pause</button>
+          <button id="remoteMute" class="secondary">Unmute</button>
+          <button id="remoteSnap" class="secondary">Snapshot</button>
+          <button id="remoteFS" class="secondary">Fullscreen</button>
+          <div class="status" id="remoteStatus">Memuat…</div>
+        </div>
+        <div class="snap" id="remoteSnapWrap"><img id="remoteSnapImg" alt="snapshot remote"></div>
+      </div>
+
+      <!-- Local webcam box -->
+      <div class="stream-box" id="localBox">
+        <div class="stream-head"><strong>Webcam Laptop</strong><small style="color:var(--muted)">Local camera</small></div>
+        <div class="stream-body">
+          <video id="localVideo" playsinline autoplay muted></video>
+        </div>
+        <div class="controls">
+          <button id="localPlay">Pause</button>
+          <button id="localMute" class="secondary">Unmute</button>
+          <button id="localSnap" class="secondary">Snapshot</button>
+          <button id="localFS" class="secondary">Fullscreen</button>
+          <div class="status" id="localStatus">Menunggu izin kamera…</div>
+        </div>
+        <div class="snap" id="localSnapWrap"><img id="localSnapImg" alt="snapshot local"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="card">
     <h3>Kontak</h3>
     <p>Email: desmon.spencer@gmail.com • Tel: 089697819495</p>
   </section>
 </main>
 
-<footer style="text-align:center;padding:18px;color:var(--muted)">Pastikan stream dapat diakses dari jaringan Anda.</footer>
+<footer style="text-align:center;padding:18px;color:var(--muted)">Pastikan halaman dijalankan di jaringan yang sama dengan kamera remote atau gunakan proxy HTTPS jika perlu.</footer>
 
-<!-- hls.js untuk HLS playback (jika Anda pakai .m3u8 via HTTPS) -->
+<!-- hls.js (optional) -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
 <script>
-/* CONFIG:
-   - Untuk uji lokal: leave HTTP_BASE = 'http://10.101.209.98'
-   - Untuk produksi (HTTPS): set SECURE_HLS = 'http://10.101.209.98' (ganti sesuai)
-*/
-const HTTP_BASE = 'http://10.101.209.98';
-const SECURE_HLS = ''; // jika sudah punya HTTPS HLS, masukkan di sini, mis. 'http://10.101.209.98'
+/* CONFIG */
+const HTTP_BASE = 'http://10.101.209.98'; // remote stream base (HTTP)
+const SECURE_HLS = ''; // jika Anda punya HTTPS HLS, masukkan di sini (mis. 'https://stream.example.com/stream.m3u8')
 
-const player = document.getElementById('player');
-const mjpeg = document.getElementById('mjpeg');
-const iframe = document.getElementById('iframe');
-const status = document.getElementById('status');
-const playBtn = document.getElementById('playBtn');
-const muteBtn = document.getElementById('muteBtn');
-const snapBtn = document.getElementById('snapBtn');
-const fsBtn = document.getElementById('fsBtn');
-const snapWrap = document.getElementById('snapWrap');
-const snapImg = document.getElementById('snapImg');
+/* ELEMENTS - remote */
+const remoteVideo = document.getElementById('remoteVideo');
+const remoteMJPEG = document.getElementById('remoteMJPEG');
+const remoteIframe = document.getElementById('remoteIframe');
+const remoteStatus = document.getElementById('remoteStatus');
+const remotePlay = document.getElementById('remotePlay');
+const remoteMute = document.getElementById('remoteMute');
+const remoteSnap = document.getElementById('remoteSnap');
+const remoteFS = document.getElementById('remoteFS');
+const remoteSnapWrap = document.getElementById('remoteSnapWrap');
+const remoteSnapImg = document.getElementById('remoteSnapImg');
 
-function setStatus(t){ status.textContent = t; }
+/* ELEMENTS - local */
+const localVideo = document.getElementById('localVideo');
+const localStatus = document.getElementById('localStatus');
+const localPlay = document.getElementById('localPlay');
+const localMute = document.getElementById('localMute');
+const localSnap = document.getElementById('localSnap');
+const localFS = document.getElementById('localFS');
+const localSnapWrap = document.getElementById('localSnapWrap');
+const localSnapImg = document.getElementById('localSnapImg');
 
-/* If SECURE_HLS provided (HTTPS), prefer it to avoid Mixed Content */
-if(SECURE_HLS && SECURE_HLS.startsWith('https://')){
-  if(SECURE_HLS.includes('.m3u8') && Hls.isSupported()){
-    const hls = new Hls();
-    hls.loadSource(SECURE_HLS);
-    hls.attachMedia(player);
-    hls.on(Hls.Events.MANIFEST_PARSED, ()=> { player.play().catch(()=>{}); setStatus('Live (HLS)'); });
-    hls.on(Hls.Events.ERROR, (e,d)=> { console.warn('HLS error', e, d); setStatus('Error HLS'); });
-  } else {
-    player.src = SECURE_HLS;
-    player.addEventListener('loadeddata', ()=> player.play().catch(()=>{}));
-    setStatus('Live (HTTPS source)');
+function setRemoteStatus(t){ remoteStatus.textContent = t; }
+function setLocalStatus(t){ localStatus.textContent = t; }
+
+/* --- Remote stream init (tries common candidates) --- */
+(function initRemote(){
+  if(SECURE_HLS && SECURE_HLS.startsWith('https://')){
+    if(SECURE_HLS.includes('.m3u8') && Hls.isSupported()){
+      const hls = new Hls();
+      hls.loadSource(SECURE_HLS);
+      hls.attachMedia(remoteVideo);
+      hls.on(Hls.Events.MANIFEST_PARSED, ()=> { remoteVideo.play().catch(()=>{}); setRemoteStatus('Live (HLS)'); });
+      hls.on(Hls.Events.ERROR, (e,d)=> { console.warn('HLS error', e, d); setRemoteStatus('Error HLS'); });
+      return;
+    } else {
+      remoteVideo.src = SECURE_HLS;
+      remoteVideo.addEventListener('loadeddata', ()=> remoteVideo.play().catch(()=>{}));
+      setRemoteStatus('Live (HTTPS source)');
+      return;
+    }
   }
-} else {
-  // No HTTPS HLS: try local HTTP candidates (works when page served via HTTP or local)
+
+  // No HTTPS HLS: try HTTP candidates (works when page served via HTTP or local)
   const candidates = [
     HTTP_BASE + '/stream.m3u8',
     HTTP_BASE + '/video.mp4',
@@ -118,43 +159,88 @@ if(SECURE_HLS && SECURE_HLS.startsWith('https://')){
   let used=false;
   for(const c of candidates){
     try {
+      if(c.endsWith('.m3u8') && Hls.isSupported()){
+        const hls = new Hls();
+        hls.loadSource(c);
+        hls.attachMedia(remoteVideo);
+        hls.on(Hls.Events.MANIFEST_PARSED, ()=> { remoteVideo.play().catch(()=>{}); setRemoteStatus('Live (HLS)'); });
+        used=true; break;
+      }
       if(c.endsWith('.mp4')){
-        player.src = c;
-        player.addEventListener('loadeddata', ()=> { player.play().catch(()=>{}); setStatus('Live (MP4)'); });
+        remoteVideo.src = c;
+        remoteVideo.addEventListener('loadeddata', ()=> { remoteVideo.play().catch(()=>{}); setRemoteStatus('Live (MP4)'); });
         used=true; break;
       }
       if(c.includes('action=stream') || c.includes('stream')){
-        mjpeg.src = c; mjpeg.style.display='block'; player.style.display='none'; setStatus('Live (MJPEG)'); used=true; break;
+        remoteMJPEG.src = c; remoteMJPEG.style.display='block'; remoteVideo.style.display='none'; setRemoteStatus('Live (MJPEG)'); used=true; break;
       }
     } catch(e){ console.warn('candidate fail', c, e); }
   }
   if(!used){
-    iframe.src = HTTP_BASE; iframe.style.display='block'; player.style.display='none'; setStatus('Fallback iframe (cek jaringan/protokol)');
+    remoteIframe.src = HTTP_BASE; remoteIframe.style.display='block'; remoteVideo.style.display='none'; setRemoteStatus('Fallback iframe (cek jaringan/protokol)');
   }
-}
 
-/* Controls */
-playBtn.addEventListener('click', ()=> {
-  if(player.paused){ player.play().catch(()=>{}); playBtn.textContent='Pause'; }
-  else { player.pause(); playBtn.textContent='Play'; }
-});
-muteBtn.addEventListener('click', ()=> { player.muted = !player.muted; muteBtn.textContent = player.muted ? 'Unmute' : 'Mute'; });
+  remoteVideo.addEventListener('playing', ()=> setRemoteStatus('Live'));
+  remoteVideo.addEventListener('pause', ()=> setRemoteStatus('Terhenti'));
+  remoteVideo.addEventListener('error', ()=> setRemoteStatus('Error memuat video'));
+})();
 
-snapBtn.addEventListener('click', ()=>{
+/* --- Local webcam init (getUserMedia) --- */
+(async function initLocal(){
   try {
-    if(player.style.display === 'none' || player.readyState < 2){ setStatus('Snapshot tidak tersedia'); return; }
-    const w = player.videoWidth || 640, h = player.videoHeight || 360;
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }, audio: false });
+    localVideo.srcObject = stream;
+    localVideo.play().catch(()=>{});
+    setLocalStatus('Live (webcam)');
+  } catch(err){
+    console.warn('getUserMedia error', err);
+    setLocalStatus('Tidak dapat mengakses kamera: ' + (err && err.message ? err.message : 'izin ditolak'));
+  }
+})();
+
+/* --- Controls: remote --- */
+remotePlay.addEventListener('click', ()=>{
+  if(remoteVideo.paused){ remoteVideo.play().catch(()=>{}); remotePlay.textContent='Pause'; }
+  else { remoteVideo.pause(); remotePlay.textContent='Play'; }
+});
+remoteMute.addEventListener('click', ()=>{ remoteVideo.muted = !remoteVideo.muted; remoteMute.textContent = remoteVideo.muted ? 'Unmute' : 'Mute'; });
+remoteSnap.addEventListener('click', ()=>{
+  try {
+    if(remoteVideo.style.display === 'none' || remoteVideo.readyState < 2){ setRemoteStatus('Snapshot tidak tersedia'); return; }
+    const w = remoteVideo.videoWidth || 640, h = remoteVideo.videoHeight || 360;
     const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
-    canvas.getContext('2d').drawImage(player,0,0,w,h);
-    snapImg.src = canvas.toDataURL('image/png');
-    snapWrap.style.display='block';
-    setStatus('Snapshot diambil');
-  } catch(e){ console.warn(e); setStatus('Snapshot gagal (CORS)'); }
+    canvas.getContext('2d').drawImage(remoteVideo,0,0,w,h);
+    remoteSnapImg.src = canvas.toDataURL('image/png');
+    remoteSnapWrap.style.display='block';
+    setRemoteStatus('Snapshot diambil');
+  } catch(e){ console.warn(e); setRemoteStatus('Snapshot gagal (CORS)'); }
+});
+remoteFS.addEventListener('click', async ()=>{
+  const el = document.getElementById('remoteBox') || document.body;
+  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> setRemoteStatus('Fullscreen tidak tersedia'));
+  else document.exitFullscreen();
 });
 
-fsBtn.addEventListener('click', async ()=>{
-  const el = document.getElementById('videoWidget') || document.body;
-  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> setStatus('Fullscreen tidak tersedia'));
+/* --- Controls: local --- */
+localPlay.addEventListener('click', ()=>{
+  if(localVideo.paused){ localVideo.play().catch(()=>{}); localPlay.textContent='Pause'; }
+  else { localVideo.pause(); localPlay.textContent='Play'; }
+});
+localMute.addEventListener('click', ()=>{ localVideo.muted = !localVideo.muted; localMute.textContent = localVideo.muted ? 'Unmute' : 'Mute'; });
+localSnap.addEventListener('click', ()=>{
+  try {
+    if(localVideo.style.display === 'none' || localVideo.readyState < 2){ setLocalStatus('Snapshot tidak tersedia'); return; }
+    const w = localVideo.videoWidth || 640, h = localVideo.videoHeight || 360;
+    const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(localVideo,0,0,w,h);
+    localSnapImg.src = canvas.toDataURL('image/png');
+    localSnapWrap.style.display='block';
+    setLocalStatus('Snapshot diambil');
+  } catch(e){ console.warn(e); setLocalStatus('Snapshot gagal'); }
+});
+localFS.addEventListener('click', async ()=>{
+  const el = document.getElementById('localBox') || document.body;
+  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=> setLocalStatus('Fullscreen tidak tersedia'));
   else document.exitFullscreen();
 });
 </script>
