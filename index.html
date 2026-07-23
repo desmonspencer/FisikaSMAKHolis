@@ -3,30 +3,44 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Desmon Donald Siagian — CV Interaktif</title>
+<title>Profil — Desmon Donald Siagian (dengan Streaming)</title>
 <style>
-  :root{--accent:#2b6cb0;--muted:#666;}
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;color:#222}
-  header{background:linear-gradient(90deg,#0b3d91,#2b6cb0);color:#fff;padding:28px 16px}
+  :root{--accent:#2b6cb0;--bg:#f6f8fb;--card:#fff;--muted:#666}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:var(--bg);color:#222}
+  header{background:linear-gradient(90deg,#0b3d91,#2b6cb0);color:#fff;padding:28px 16px;position:relative}
   .container{max-width:980px;margin:18px auto;padding:0 16px}
   .hero{display:flex;gap:18px;align-items:center}
   .avatar{width:120px;height:120px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700}
   h1{margin:.2rem 0;font-size:1.6rem}
-  .meta{color:var(--muted);font-size:.95rem}
-  nav{margin-top:12px}
-  nav a{color:#fff;margin-right:12px;text-decoration:none;font-weight:600}
-  section{background:#fff;padding:16px;margin:12px 0;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-  .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
-  .skill{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
-  .timeline{list-style:none;padding:0;margin:0}
-  .timeline li{padding:8px 0;border-left:3px solid var(--accent);margin-left:12px;padding-left:12px}
-  footer{font-size:.9rem;color:var(--muted);text-align:center;padding:18px 0}
-  /* interactive */
-  .tabs{display:flex;gap:8px;margin-bottom:12px}
-  .tabs button{padding:8px 12px;border-radius:6px;border:1px solid #ddd;background:#f7f7f7;cursor:pointer}
-  .tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .hidden{display:none}
-  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+  .meta{color:rgba(255,255,255,.9);font-size:.95rem}
+  /* Video widget (top-right) */
+  .video-widget{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 320px;
+    max-width: calc(100% - 32px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    overflow:hidden;
+    border:1px solid rgba(0,0,0,.06);
+    z-index: 60;
+  }
+  .video-header{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(11,61,145,.06)}
+  .video-header .title{font-weight:700;color:#0b3d91;font-size:.95rem}
+  .video-body{position:relative;background:#000}
+  video, iframe{display:block;width:100%;height:180px;object-fit:cover;background:#000}
+  .controls{display:flex;gap:8px;padding:8px;align-items:center;justify-content:flex-start}
+  .controls button{background:var(--accent);color:#fff;border:none;padding:6px 8px;border-radius:6px;cursor:pointer;font-weight:600}
+  .controls button.secondary{background:#fff;color:var(--accent);border:1px solid rgba(11,61,145,.12)}
+  .controls .status{margin-left:auto;color:var(--muted);font-size:.85rem}
+  .snapshot{display:block;width:100%;height:0;padding-bottom:56.25%;background:#111;position:relative}
+  .snapshot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  @media(max-width:720px){
+    .video-widget{position:static;margin:12px;border-radius:8px}
+    header{padding-bottom:120px}
+  }
 </style>
 </head>
 <body>
@@ -35,91 +49,127 @@
     <div class="avatar">DD</div>
     <div>
       <h1>Desmon Donald Siagian</h1>
-      <div class="meta">Guru Fisika • Pengalaman mengajar & organisasi • Bandung, Jawa Barat</div>
-      <nav>
-        <a href="#about">Tentang</a><a href="#experience">Pengalaman</a><a href="#works">Aktivitas</a><a href="#contact">Kontak</a>
-      </nav>
+      <div class="meta">Guru Fisika • Bandung, Jawa Barat</div>
+    </div>
+  </div>
+
+  <!-- Video widget: pojok kanan atas -->
+  <div class="video-widget" id="videoWidget" aria-live="polite">
+    <div class="video-header">
+      <div class="title">Live Stream</div>
+      <div style="font-size:.85rem;color:var(--muted)">Profil — Kamera</div>
+    </div>
+    <div class="video-body">
+      <!-- Primary: <video> tag. Jika stream tidak kompatibel, fallback ke <iframe> -->
+      <video id="liveVideo" playsinline autoplay muted controls crossorigin="anonymous" poster="">
+        <!-- Ganti src jika perlu, contoh: http://10.101.209.98/stream -->
+        <source src="http://10.101.209.98/" type="video/mp4">
+        Browser Anda tidak mendukung pemutar video. Jika stream tidak tampil, coba periksa path stream atau gunakan iframe fallback.
+      </video>
+      <iframe id="iframeFallback" src="http://10.101.209.98/" style="display:none;border:0" title="Live stream fallback"></iframe>
+    </div>
+    <div class="controls">
+      <button id="btnPlayPause">Pause</button>
+      <button id="btnMute" class="secondary">Unmute</button>
+      <button id="btnSnapshot" class="secondary">Ambil Snapshot</button>
+      <button id="btnFullscreen" class="secondary">Fullscreen</button>
+      <div class="status" id="streamStatus">Memuat…</div>
+    </div>
+    <div class="snapshot" id="snapshotContainer" style="display:none">
+      <img id="snapshotImg" alt="Snapshot stream">
     </div>
   </div>
 </header>
 
 <main class="container">
-  <section id="about">
-    <h2>Tentang Saya</h2>
-    <p><strong>Nama:</strong> DESMON DONALD SIAGIAN<br>
-       <strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, Taman Sari, Bandung, West Java, 40116.</p>
-    <p>Saya seorang guru Fisika dengan latar belakang Geophysics Engineering (ITB) dan pengalaman mengajar di SMA serta aktif dalam kegiatan organisasi dan pelatihan pendidikan.</p>
-  </section>
-
-  <section class="grid">
-    <div>
-      <section id="experience">
-        <h3>Pengalaman Kerja & Pendidikan</h3>
-        <ul class="timeline">
-          <li><strong>Guru @ SMA BPK Penabur Holis</strong> (2016 - sekarang)</li>
-          <li><strong>Account Officer, PT Bank Mega</strong> (2011 - 2014)</li>
-          <li><strong>Geophysics Engineering</strong>, ITB (2003 - 2009)</li>
-        </ul>
-      </section>
-
-      <section id="works">
-        <h3>Aktivitas & Pelatihan</h3>
-        <div class="tabs" role="tablist">
-          <button class="active" data-tab="a">Organisasi</button>
-          <button data-tab="b">Seminar</button>
-          <button data-tab="c">Hobi</button>
-        </div>
-        <div id="tab-a"><p>Secretarie berbagai forum komunitas dan kepanitiaan pemilu lokal.</p></div>
-        <div id="tab-b" class="hidden"><p>Workshop Laboratory Management, Teacher Creativity Seminar, PENABUR EDU SUMMIT.</p></div>
-        <div id="tab-c" class="hidden"><p>Organisasi, membaca sejarah, musik, travelling.</p></div>
-      </section>
-
-      <section>
-        <h3>Keahlian</h3>
-        <div class="skill"><span>Matlab / Fortran</span><strong>Menengah</strong></div>
-        <div class="skill"><span>Microsoft Office</span><strong>Mahir</strong></div>
-        <div class="skill"><span>Manajemen Laboratorium</span><strong>Terlatih</strong></div>
-      </section>
-    </div>
-
-    <aside>
-      <section>
-        <h3>Kontak</h3>
-        <p><strong>Email:</strong> desmon.spencer@gmail.com<br>
-           <strong>Telepon:</strong> 089697819495</p>
-        <p><a href="#" id="download">Unduh CV (PDF)</a></p>
-      </section>
-
-      <section>
-        <h3>Ringkasan CV</h3>
-        <p><strong>Pendidikan:</strong> Geophysics Engineering, ITB.</p>
-        <p><strong>Bahasa:</strong> Indonesia, Inggris (fungsional).</p>
-      </section>
-    </aside>
+  <!-- Konten profil Anda (ringkasan CV) bisa ditempatkan di sini -->
+  <section style="margin-top:18px;background:#fff;padding:16px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.04)">
+    <h2>Profil Singkat</h2>
+    <p><strong>Nama:</strong> Desmon Donald Siagian</p>
+    <p><strong>Pendidikan:</strong> Geophysics Engineering, ITB</p>
+    <p><strong>Kontak:</strong> desmon.spencer@gmail.com • 089697819495</p>
   </section>
 </main>
 
-<footer>
-  Dibuat otomatis — sesuaikan konten dan tautan sebelum publikasi. Sumber profil serupa: LinkedIn (nama serupa ditemukan). 
-</footer>
-
 <script>
-  // Tabs interaktif
-  document.querySelectorAll('.tabs button').forEach(btn=>{
-    btn.addEventListener('click',e=>{
-      document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      const id = btn.dataset.tab;
-      ['a','b','c'].forEach(k=>{
-        document.getElementById('tab-'+k).classList.toggle('hidden', k!==id);
-      });
-    });
+/* Konfigurasi: ganti jika stream memerlukan path lain (mis. '/stream' atau '/video') */
+const VIDEO_SRC = 'http://10.101.209.98/'; // ubah jika perlu
+
+const video = document.getElementById('liveVideo');
+const iframe = document.getElementById('iframeFallback');
+const btnPlayPause = document.getElementById('btnPlayPause');
+const btnMute = document.getElementById('btnMute');
+const btnSnapshot = document.getElementById('btnSnapshot');
+const btnFullscreen = document.getElementById('btnFullscreen');
+const status = document.getElementById('streamStatus');
+const snapshotContainer = document.getElementById('snapshotContainer');
+const snapshotImg = document.getElementById('snapshotImg');
+
+function setStatus(text){ status.textContent = text; }
+
+/* Inisialisasi sumber video */
+(function initSource(){
+  // Set source element if not already set
+  const srcs = video.querySelectorAll('source');
+  if(srcs.length && srcs[0].src !== VIDEO_SRC){
+    srcs[0].src = VIDEO_SRC;
+    video.load();
+  }
+  // Coba autoplay; jika gagal, tampilkan fallback iframe
+  video.addEventListener('error', ()=> {
+    setStatus('Stream tidak dapat diputar, menggunakan fallback.');
+    video.style.display = 'none';
+    iframe.style.display = 'block';
   });
-  // Placeholder download
-  document.getElementById('download').addEventListener('click',e=>{
-    e.preventDefault();
-    alert('Tambahkan file PDF CV Anda di server dan perbarui atribut href link ini.');
-  });
+  video.addEventListener('playing', ()=> setStatus('Live'));
+  video.addEventListener('pause', ()=> setStatus('Terhenti'));
+  video.addEventListener('loadeddata', ()=> setStatus('Siap'));
+  // Jika autoplay diblokir, tunjukkan status
+  video.play().catch(()=> setStatus('Autoplay diblokir; tekan Play'));
+})();
+
+/* Kontrol Play / Pause */
+btnPlayPause.addEventListener('click', ()=>{
+  if(video.paused){ video.play(); btnPlayPause.textContent = 'Pause'; }
+  else { video.pause(); btnPlayPause.textContent = 'Play'; }
+});
+
+/* Kontrol Mute / Unmute */
+btnMute.addEventListener('click', ()=>{
+  video.muted = !video.muted;
+  btnMute.textContent = video.muted ? 'Unmute' : 'Mute';
+});
+
+/* Snapshot: gambar diambil dari video ke canvas */
+btnSnapshot.addEventListener('click', ()=>{
+  try {
+    const w = video.videoWidth || 640;
+    const h = video.videoHeight || 360;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, w, h);
+    snapshotImg.src = canvas.toDataURL('image/png');
+    snapshotContainer.style.display = 'block';
+    setStatus('Snapshot diambil');
+  } catch (err) {
+    setStatus('Snapshot gagal (CORS atau stream tidak mendukung).');
+  }
+});
+
+/* Fullscreen */
+btnFullscreen.addEventListener('click', async ()=>{
+  const el = document.getElementById('videoWidget');
+  if(!document.fullscreenElement){
+    await el.requestFullscreen().catch(()=> setStatus('Fullscreen tidak tersedia'));
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+/* Catatan: jika stream cross-origin, snapshot mungkin dibatasi oleh CORS.
+   Jika video tidak kompatibel dengan <video>, iframe fallback akan ditampilkan.
+   Jika stream memerlukan protokol atau path khusus, ubah VIDEO_SRC di atas. */
 </script>
 </body>
 </html>
