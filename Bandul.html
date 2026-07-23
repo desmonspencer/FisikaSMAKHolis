@@ -1,1 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Ayunan Bandul Sederhana</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #64748b;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 640px;
+            width: 100%;
+        }
+        /* Kanvas persegi 600x600 piksel menjamin skala X dan Y 1:1 */
+        canvas {
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            display: block;
+        }
+        .controls-container {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 180px 1fr 70px;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
+        }
+        label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+        }
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        .val-display {
+            font-weight: bold;
+            color: #2563eb;
+            text-align: right;
+            font-size: 14px;
+        }
+        .info-panel {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
 
+    <div class="container">
+        <h2>Simulasi Ayunan Bandul</h2>
+        <p class="subtitle">Percepatan Gravitasi Bumi (g = 9.81 m/s²)</p>
+        
+        <!-- Area Gambar (Kanvas 600x600) -->
+        <canvas id="pendulumCanvas" width="600" height="600"></canvas>
+        
+        <!-- Informasi Fisika Tambahan -->
+        <div class="info-panel">
+            <span><strong>Periode (T):</strong> <span id="periodText">0.00</span> s</span>
+            <span><strong>Frekuensi (f):</strong> <span id="freqText">0.00</span> Hz</span>
+            <span><strong>Sudut Saat Ini (θ):</strong> <span id="currentAngleText">0.0°</span></span>
+        </div>
+
+        <!-- Panel Kontrol Slider -->
+        <div class="controls-container">
+            <label for="angleSlider">Sudut Simpangan (θ₀):</label>
+            <input type="range" id="angleSlider" min="5" max="75" step="1" value="30">
+            <span class="val-display" id="angleVal">30°</span>
+            
+            <label for="lengthSlider">Panjang Tali (L):</label>
+            <input type="range" id="lengthSlider" min="0.5" max="3.0" step="0.1" value="1.5">
+            <span class="val-display" id="lengthVal">1.5 m</span>
+            
+            <label for="massSlider">Massa Benda (m):</label>
+            <input type="range" id="massSlider" min="0.1" max="5.0" step="0.1" value="1.0">
+            <span class="val-display" id="massVal">1.0 kg</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pendulumCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Slider & Elemen Tampilan
+        const angleSlider = document.getElementById('angleSlider');
+        const lengthSlider = document.getElementById('lengthSlider');
+        const massSlider = document.getElementById('massSlider');
+
+        const angleVal = document.getElementById('angleVal');
+        const lengthVal = document.getElementById('lengthVal');
+        const massVal = document.getElementById('massVal');
+        
+        const periodText = document.getElementById('periodText');
+        const freqText = document.getElementById('freqText');
+        const currentAngleText = document.getElementById('currentAngleText');
+
+        // Parameter Fisika Konstan
+        const g = 9.81; // Percepatan gravitasi Bumi (m/s²)
+        
+        // Skala Visual Konstan (1 meter = 100 piksel)
+        // Karena piksel kanvas 600x600, skala X dan Y dipastikan 1:1 (sama besar)
+        const scale = 100; 
+        const pivotX = canvas.width / 2; // Titik tumpu di tengah horizontal (300px)
+        const pivotY = 80;               // Titik tumpu di Y = 80px
+
+        // Pengatur Waktu Animasi
+        let startTime = performance.now();
+
+        // Fungsi Menggambar Grid dengan Skala Tetap (1 unit = 1 meter)
+        function drawGrid() {
+            ctx.strokeStyle = '#f1f5f9';
+            ctx.lineWidth = 1;
+
+            // Grid Vertikal
+            for (let x = 0; x <= canvas.width; x += scale) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            // Grid Horizontal
+            for (let y = 0; y <= canvas.height; y += scale) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Penanda Skala 1 Meter
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '11px sans-serif';
+            ctx.fillText('1 meter (100 px)', 10, canvas.height - 10);
+        }
+
+        // Loop Utama Animasi Continu
+        function animate(currentTime) {
+            // Menghitung waktu berjalan dalam detik
+            let elapsed = (currentTime - startTime) / 1000;
+
+            // Membaca Nilai dari Slider
+            const theta0_deg = parseFloat(angleSlider.value);
+            const theta0 = theta0_deg * Math.PI / 180; // Derajat ke Radian
+            const L = parseFloat(lengthSlider.value);
+            const m = parseFloat(massSlider.value);
+
+            // Update Label Slider
+            angleVal.textContent = theta0_deg + '°';
+            lengthVal.textContent = L.toFixed(1) + ' m';
+            massVal.textContent = m.toFixed(1) + ' kg';
+
+            // Perhitungan Gerak Harmonik Sederhana Bandul
+            const omega = Math.sqrt(g / L);               // Frekuensi sudut (rad/s)
+            const theta = theta0 * Math.cos(omega * elapsed); // Posisi sudut saat t
+            
+            // Perhitungan Periode dan Frekuensi
+            const T = 2 * Math.PI * Math.sqrt(L / g);
+            const f = 1 / T;
+            
+            periodText.textContent = T.toFixed(2);
+            freqText.textContent = f.toFixed(2);
+            currentAngleText.textContent = (theta * 180 / Math.PI).toFixed(1) + '°';
+
+            // Konversi Posisi Bandul (Sistem Koordinat Meter -> Piksel)
+            const xMeters = L * Math.sin(theta);
+            const yMeters = L * Math.cos(theta);
+
+            const bobX = pivotX + xMeters * scale;
+            const bobY = pivotY + yMeters * scale;
+
+            // Ukuran visual beban menyesuaikan massa (tetap proposional)
+            const bobRadius = 10 + Math.cbrt(m) * 8; 
+
+            // --- PENGGAMBARAN ELEMEN ---
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Gambar Grid Latar Belakang
+            drawGrid();
+
+            // 2. Gambar Batang Penyangga Atas
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(pivotX - 50, pivotY - 12, 100, 12);
+
+            // 3. Gambar Lintasan Busur Ayunan (Garis Putus-Putus)
+            ctx.beginPath();
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.arc(pivotX, pivotY, L * scale, (Math.PI / 2) - theta0, (Math.PI / 2) + theta0);
+            ctx.stroke();
+            ctx.setLineDash([]); // Kembalikan ke garis biasa
+
+            // 4. Gambar Tali Bandul
+            ctx.beginPath();
+            ctx.moveTo(pivotX, pivotY);
+            ctx.lineTo(bobX, bobY);
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 5. Gambar Engsel Titik Tumpu
+            ctx.beginPath();
+            ctx.arc(pivotX, pivotY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#0f172a';
+            ctx.fill();
+
+            // 6. Gambar Beban Bandul (Bola)
+            ctx.beginPath();
+            ctx.arc(bobX, bobY, bobRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#2563eb';
+            ctx.fill();
+            ctx.strokeStyle = '#1d4ed8';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Minta frame berikutnya untuk menjaga animasi tetap berjalan
+            requestAnimationFrame(animate);
+        }
+
+        // Fungsi Reset Waktu saat Slider Diubah
+        // Ini memastikan saat parameter diubah, bandul mulai berayun dari sudut awal secara mulus
+        function resetTime() {
+            startTime = performance.now();
+        }
+
+        // Menambahkan Listener ke Slider
+        angleSlider.addEventListener('input', resetTime);
+        lengthSlider.addEventListener('input', resetTime);
+        massSlider.addEventListener('input', resetTime);
+
+        // Jalankan Simulasi Pertama Kali
+        requestAnimationFrame(animate);
+    </script>
+</body>
+</html>
