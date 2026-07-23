@@ -3,42 +3,97 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Profil — Live Stream Widget</title>
+<title>Desmon Donald Siagian — CV Interaktif & Live Stream</title>
 <style>
-  body{font-family:system-ui,Arial;margin:0;background:#f6f8fb;color:#222}
-  header{background:#0b3d91;color:#fff;padding:20px;position:relative}
-  .container{max-width:980px;margin:0 auto;padding:16px}
-  .video-widget{position:absolute;top:12px;right:12px;width:340px;border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.18);background:#fff}
-  .video-header{padding:8px 12px;background:rgba(11,61,145,.06);display:flex;justify-content:space-between;align-items:center}
-  .video-body{background:#000}
-  video, iframe, .mjpeg-img{width:100%;height:190px;display:block;object-fit:cover;background:#000}
-  .controls{display:flex;gap:8px;padding:8px}
-  .controls button{padding:6px 8px;border-radius:6px;border:0;background:#2b6cb0;color:#fff;cursor:pointer}
-  .controls .secondary{background:#fff;color:#2b6cb0;border:1px solid rgba(43,108,176,.12)}
-  .status{margin-left:auto;color:#666;font-size:.9rem;align-self:center}
-  @media(max-width:720px){.video-widget{position:static;margin:12px}}
+  :root{
+    --accent:#0b3d91;
+    --accent-2:#2b6cb0;
+    --muted:#666;
+    --card:#fff;
+    --bg:#f6f8fb;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:var(--bg);color:#222;line-height:1.45}
+  header{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;padding:28px 16px;position:relative}
+  .container{max-width:1100px;margin:18px auto;padding:0 16px}
+  .hero{display:flex;gap:18px;align-items:center}
+  .avatar{width:120px;height:120px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:20px}
+  h1{margin:.2rem 0;font-size:1.6rem}
+  .meta{color:rgba(255,255,255,.95);font-size:.95rem}
+  nav{margin-top:10px}
+  nav a{color:#fff;margin-right:12px;text-decoration:none;font-weight:600}
+  main{max-width:1100px;margin:18px auto;padding:0 16px}
+  section.card{background:var(--card);padding:16px;margin:12px 0;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
+  .timeline{list-style:none;padding:0;margin:0}
+  .timeline li{padding:10px 0;border-left:3px solid var(--accent);margin-left:12px;padding-left:12px}
+  .skill{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
+  footer{font-size:.9rem;color:var(--muted);text-align:center;padding:18px 0}
+  /* Video widget (pojok kanan atas) */
+  .video-widget{
+    position:absolute;
+    top:12px;
+    right:12px;
+    width:340px;
+    max-width:calc(100% - 24px);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    background:#fff;
+    border:1px solid rgba(0,0,0,.06);
+    z-index:60;
+  }
+  .video-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.95)}
+  .video-header .title{font-weight:700;color:var(--accent)}
+  .video-body{position:relative;background:#000}
+  video, iframe, img.mjpeg{display:block;width:100%;height:190px;object-fit:cover;background:#000;border:0}
+  .controls{display:flex;gap:8px;padding:8px;align-items:center}
+  .controls button{background:var(--accent-2);color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:600}
+  .controls button.secondary{background:#fff;color:var(--accent-2);border:1px solid rgba(43,108,176,.12)}
+  .controls .status{margin-left:auto;color:var(--muted);font-size:.9rem}
+  .snapshot{display:none;padding:8px;border-top:1px solid #eee}
+  .snapshot img{width:100%;height:auto;border-radius:6px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  @media(max-width:720px){
+    header{padding-bottom:140px}
+    .video-widget{position:static;margin:12px;border-radius:8px}
+  }
+  /* small helpers */
+  .muted{color:var(--muted)}
+  .small{font-size:.9rem}
+  pre{background:#f3f4f6;padding:8px;border-radius:6px;overflow:auto}
 </style>
 </head>
 <body>
 <header>
-  <div class="container">
-    <h1>Desmon Donald Siagian</h1>
-    <p style="color:#e6eefc">Profil & Live Stream</p>
+  <div class="container hero">
+    <div class="avatar">DD</div>
+    <div>
+      <h1>Desmon Donald Siagian</h1>
+      <div class="meta">Guru Fisika • Geophysics Engineering (ITB) • Bandung, Jawa Barat</div>
+      <nav>
+        <a href="#about">Tentang</a>
+        <a href="#experience">Pengalaman</a>
+        <a href="#skills">Keahlian</a>
+        <a href="#contact">Kontak</a>
+      </nav>
+    </div>
   </div>
 
+  <!-- Video widget: pojok kanan atas -->
   <div class="video-widget" id="videoWidget" aria-live="polite">
     <div class="video-header">
-      <div style="font-weight:700;color:#0b3d91">Live Stream</div>
-      <div style="font-size:.9rem;color:#666">Kamera Profil</div>
+      <div class="title">Live Stream</div>
+      <div class="small muted">Kamera Profil</div>
     </div>
+
     <div class="video-body" id="videoBody">
-      <!-- video tag untuk HLS/MP4 -->
+      <!-- <video> untuk HLS/MP4; MJPEG fallback menggunakan <img>; iframe fallback terakhir -->
       <video id="liveVideo" playsinline controls muted></video>
-      <!-- fallback MJPEG (disembunyikan awalnya) -->
-      <img id="mjpegImg" class="mjpeg-img" style="display:none" alt="MJPEG stream">
-      <!-- iframe fallback -->
-      <iframe id="iframeFallback" style="display:none;border:0" title="stream fallback"></iframe>
+      <img id="mjpegImg" class="mjpeg" style="display:none" alt="MJPEG stream">
+      <iframe id="iframeFallback" style="display:none" title="stream fallback"></iframe>
     </div>
+
     <div class="controls">
       <button id="btnPlayPause">Pause</button>
       <button id="btnMute" class="secondary">Unmute</button>
@@ -46,27 +101,83 @@
       <button id="btnFullscreen" class="secondary">Fullscreen</button>
       <div class="status" id="streamStatus">Memuat…</div>
     </div>
+
+    <div class="snapshot" id="snapshotContainer">
+      <img id="snapshotImg" alt="Snapshot stream">
+    </div>
   </div>
 </header>
 
-<main class="container" style="padding-top:120px">
-  <section style="background:#fff;padding:16px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.04)">
-    <h2>Profil Singkat</h2>
-    <p>Desmon Donald Siagian — Guru Fisika, Bandung</p>
+<main class="container">
+  <section id="about" class="card">
+    <h2>Tentang Saya</h2>
+    <p><strong>Nama:</strong> DESMON DONALD SIAGIAN</p>
+    <p><strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, RT 06, RW 11 Taman Sari, Bandung, West Java, 40116.</p>
+    <p>Saya seorang guru Fisika dengan latar belakang Geophysics Engineering (ITB). Aktif di kegiatan organisasi, pelatihan pendidikan, dan pengembangan laboratorium.</p>
   </section>
+
+  <div class="grid">
+    <div>
+      <section id="experience" class="card">
+        <h3>Pengalaman Kerja & Pendidikan</h3>
+        <ul class="timeline">
+          <li><strong>Guru</strong> — SMA BPK Penabur Holis (2016 - sekarang)</li>
+          <li><strong>Account Officer</strong> — PT Bank Mega, Tbk (2011 - 2014)</li>
+          <li><strong>Geophysics Engineering</strong> — Institut Teknologi Bandung (2003 - 2009)</li>
+          <li><strong>PT Smart Mediaware / LAPI ITB</strong> (2009 - 2010)</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h3>Aktivitas & Pelatihan</h3>
+        <p>Beberapa pelatihan dan seminar: Laboratory Management Workshop (2024), Teacher Creativity Seminar (2023), PENABUR EDU SUMMIT (2022), dan pelatihan guru Kurikulum 2013.</p>
+      </section>
+
+      <section id="skills" class="card">
+        <h3>Keahlian</h3>
+        <div class="skill"><span>Matlab / Fortran</span><strong>Menengah</strong></div>
+        <div class="skill"><span>Microsoft Office</span><strong>Mahir</strong></div>
+        <div class="skill"><span>Manajemen Laboratorium</span><strong>Terlatih</strong></div>
+      </section>
+
+      <section class="card">
+        <h3>Lembar Kerja Singkat (Contoh)</h3>
+        <p class="small muted">Gunakan bagian ini untuk menaruh link PDF CV, materi, atau lembar kerja yang bisa diunduh.</p>
+        <p><a href="#" id="downloadCv">Unduh CV (PDF)</a></p>
+      </section>
+    </div>
+
+    <aside>
+      <section id="contact" class="card">
+        <h3>Kontak</h3>
+        <p><strong>Email:</strong> desmon.spencer@gmail.com</p>
+        <p><strong>Telepon:</strong> 089697819495</p>
+        <p class="small muted">Sesuaikan alamat email/telepon jika perlu.</p>
+      </section>
+
+      <section class="card">
+        <h3>Ringkasan CV</h3>
+        <p><strong>Pendidikan:</strong> Geophysics Engineering, ITB</p>
+        <p><strong>Bahasa:</strong> Indonesia, Inggris (fungsional)</p>
+      </section>
+    </aside>
+  </div>
 </main>
+
+<footer>
+  <div class="container small muted">Halaman ini dibuat untuk menampilkan CV interaktif dan live stream. Pastikan jaringan Anda dapat mengakses alamat stream.</div>
+</footer>
 
 <!-- hls.js CDN (untuk HLS playback di browser yang tidak native) -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
 <script>
-/* Ubah VIDEO_SRC sesuai protokol/path server Anda.
-   Contoh:
-   - HLS: 'http://10.101.209.98:8080/stream.m3u8'
-   - MJPEG: 'http://10.101.209.98:8080/?action=stream'
-   - MP4: 'http://10.101.209.98/video.mp4'
-   - RTSP: tidak langsung diputar di browser (butuh ffmpeg gateway)
+/*
+  PENTING:
+  - Ganti VIDEO_SRC jika stream menggunakan path/port lain.
+  - Jika stream adalah RTSP, browser tidak memutar langsung. Gunakan ffmpeg atau gateway RTSP->HLS.
+  - Contoh path umum dicantumkan di candidates[].
 */
-const VIDEO_SRC = 'http://10.101.209.98'; // ganti jika perlu
+const VIDEO_SRC = 'http://10.101.209.98'; // Ganti jika perlu, mis. 'http://10.101.209.98:8080/stream.m3u8'
 
 const video = document.getElementById('liveVideo');
 const mjpegImg = document.getElementById('mjpegImg');
@@ -76,19 +187,32 @@ const btnPlayPause = document.getElementById('btnPlayPause');
 const btnMute = document.getElementById('btnMute');
 const btnSnapshot = document.getElementById('btnSnapshot');
 const btnFullscreen = document.getElementById('btnFullscreen');
+const snapshotContainer = document.getElementById('snapshotContainer');
+const snapshotImg = document.getElementById('snapshotImg');
 
 function setStatus(t){ status.textContent = t; }
 
-/* Coba deteksi HLS (.m3u8) */
+/* Heuristik: coba beberapa kandidat path umum */
+const candidates = [
+  VIDEO_SRC,
+  VIDEO_SRC + '/stream.m3u8',
+  VIDEO_SRC + '/hls/stream.m3u8',
+  VIDEO_SRC + '/video.mp4',
+  VIDEO_SRC + ':8080/?action=stream',
+  VIDEO_SRC + ':8080/stream',
+  VIDEO_SRC + ':8000/stream.m3u8',
+  VIDEO_SRC + '/?action=stream'
+];
+
 function tryHLS(src){
   if(!src) return false;
-  if(src.endsWith('.m3u8') || src.includes('.m3u8')){
+  if(src.includes('.m3u8')){
     if(Hls.isSupported()){
       const hls = new Hls();
       hls.loadSource(src);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, ()=> { video.play().catch(()=>{}); setStatus('Live (HLS)'); });
-      hls.on(Hls.Events.ERROR, (e,d)=> console.warn('hls error',e,d));
+      hls.on(Hls.Events.ERROR, (e,d)=> console.warn('HLS error', e, d));
     } else if(video.canPlayType('application/vnd.apple.mpegurl')){
       video.src = src;
       video.addEventListener('loadedmetadata', ()=> video.play().catch(()=>{}));
@@ -99,7 +223,6 @@ function tryHLS(src){
   return false;
 }
 
-/* Coba MP4/HTTP progressive */
 function tryMP4(src){
   if(!src) return false;
   if(src.endsWith('.mp4') || src.includes('.mp4')){
@@ -111,11 +234,10 @@ function tryMP4(src){
   return false;
 }
 
-/* Coba MJPEG */
 function tryMJPEG(src){
   if(!src) return false;
-  // heuristik: banyak MJPEG endpoint mengandung 'stream' atau 'action=stream'
-  if(src.includes('mjpeg') || src.includes('stream') || src.includes('action=stream')){
+  // heuristik: endpoint MJPEG sering mengandung 'stream' atau 'mjpg' atau 'action=stream'
+  if(src.includes('mjpeg') || src.includes('mjpg') || src.includes('action=stream') || src.includes('stream')){
     mjpegImg.src = src;
     mjpegImg.style.display = 'block';
     video.style.display = 'none';
@@ -126,7 +248,6 @@ function tryMJPEG(src){
   return false;
 }
 
-/* Fallback iframe */
 function tryIframe(src){
   iframe.src = src;
   iframe.style.display = 'block';
@@ -135,30 +256,29 @@ function tryIframe(src){
   setStatus('Fallback iframe (cek path)');
 }
 
-/* Inisialisasi: coba beberapa pola umum */
+/* Inisialisasi: coba kandidat */
 (function init(){
-  // Coba beberapa kemungkinan path umum
-  const candidates = [
-    VIDEO_SRC,
-    VIDEO_SRC + '/stream.m3u8',
-    VIDEO_SRC + '/hls/stream.m3u8',
-    VIDEO_SRC + '/video.mp4',
-    VIDEO_SRC + ':8080/?action=stream',
-    VIDEO_SRC + ':8080/stream',
-    VIDEO_SRC + ':8000/stream.m3u8'
-  ];
   let used=false;
   for(const c of candidates){
-    if(tryHLS(c) || tryMP4(c) || tryMJPEG(c)){ used=true; break; }
+    try {
+      if(tryHLS(c) || tryMP4(c) || tryMJPEG(c)){ used=true; break; }
+    } catch(e){
+      console.warn('coba kandidat gagal', c, e);
+    }
   }
   if(!used){
-    // tampilkan iframe fallback ke alamat dasar
     tryIframe(VIDEO_SRC);
     setStatus('Coba fallback; periksa protokol/path dan jaringan');
   }
+
+  // event listeners
+  video.addEventListener('playing', ()=> setStatus('Live'));
+  video.addEventListener('pause', ()=> setStatus('Terhenti'));
+  video.addEventListener('loadeddata', ()=> setStatus('Siap'));
+  video.addEventListener('error', ()=> setStatus('Error memuat video'));
 })();
 
-/* Kontrol */
+/* Kontrol UI */
 btnPlayPause.addEventListener('click', ()=>{
   if(video.paused){ video.play().catch(()=>{}); btnPlayPause.textContent='Pause'; }
   else { video.pause(); btnPlayPause.textContent='Play'; }
@@ -167,25 +287,57 @@ btnMute.addEventListener('click', ()=>{ video.muted = !video.muted; btnMute.text
 
 btnSnapshot.addEventListener('click', ()=>{
   try {
+    // Jika video tidak terlihat (iframe/MJPEG), snapshot mungkin tidak tersedia
+    if(video.style.display === 'none' || video.readyState < 2){
+      setStatus('Snapshot tidak tersedia untuk sumber ini');
+      return;
+    }
     const w = video.videoWidth || 640;
     const h = video.videoHeight || 360;
     const canvas = document.createElement('canvas');
     canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(video,0,0,w,h);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, w, h);
     const data = canvas.toDataURL('image/png');
-    const win = window.open();
-    win.document.write('<img src="'+data+'" style="max-width:100%"/>');
+    snapshotImg.src = data;
+    snapshotContainer.style.display = 'block';
     setStatus('Snapshot diambil');
-  } catch(e){
+  } catch (err) {
+    console.warn(err);
     setStatus('Snapshot gagal (CORS atau stream tidak mendukung)');
   }
 });
 
 btnFullscreen.addEventListener('click', async ()=>{
   const el = document.getElementById('videoWidget');
-  if(!document.fullscreenElement) await el.requestFullscreen().catch(()=>setStatus('Fullscreen tidak tersedia'));
-  else document.exitFullscreen();
+  if(!document.fullscreenElement){
+    await el.requestFullscreen().catch(()=> setStatus('Fullscreen tidak tersedia'));
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+/* Link unduh CV (placeholder) */
+document.getElementById('downloadCv').addEventListener('click', (e)=>{
+  e.preventDefault();
+  alert('Silakan unggah file PDF CV Anda ke server dan perbarui atribut href link ini.');
 });
 </script>
+
+<!-- Petunjuk singkat untuk admin/teknisi (tidak ditampilkan di UI) -->
+<!--
+  Jika stream Anda adalah RTSP (contoh: rtsp://10.101.209.98:554/stream), browser tidak memutar langsung.
+  Contoh konversi RTSP -> HLS menggunakan ffmpeg (jalankan di server yang dapat mengakses kamera):
+
+  ffmpeg -i "rtsp://10.101.209.98:554/your_rtsp_path" \
+    -c:v copy -c:a aac -f hls \
+    -hls_time 2 -hls_list_size 3 -hls_flags delete_segments \
+    /var/www/html/stream/stream.m3u8
+
+  Setelah itu akses HLS di browser: http://<server>/stream/stream.m3u8
+  Pastikan server mengirim header CORS jika halaman dan stream berada di domain berbeda:
+    Access-Control-Allow-Origin: *
+-->
+
 </body>
 </html>
