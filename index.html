@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Desmon Donald Siagian — CV Interaktif & Live Stream</title>
-<link rel="icon" href="" />
 <style>
   :root{--accent:#0b3d91;--accent2:#2b6cb0;--muted:#666;--bg:#f6f8fb;--card:#fff}
   *{box-sizing:border-box}
@@ -24,7 +23,6 @@
   .timeline li{padding:10px 0;border-left:3px solid var(--accent);margin-left:12px;padding-left:12px}
   .skill{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee}
   footer{font-size:.9rem;color:var(--muted);text-align:center;padding:18px 0}
-  /* Video widget (pojok kanan atas) */
   .video-widget{position:absolute;top:12px;right:12px;width:340px;max-width:calc(100% - 24px);border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.18);background:#fff;border:1px solid rgba(0,0,0,.06);z-index:60}
   .video-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.95)}
   .video-header .title{font-weight:700;color:var(--accent)}
@@ -48,7 +46,7 @@
     <div class="avatar">DD</div>
     <div>
       <h1>Desmon Donald Siagian</h1>
-      <div class="meta">Guru Fisika • Geophysics Engineering (ITB) • Bandung, Jawa Barat</div>
+      <div class="meta">Guru Fisika • Geophysics Engineering (ITB) • Bandung</div>
       <nav>
         <a href="#about">Tentang</a>
         <a href="#experience">Pengalaman</a>
@@ -58,19 +56,17 @@
     </div>
   </div>
 
-  <!-- Video widget: pojok kanan atas -->
+  <!-- Video widget: menggunakan alamat HTTP yang Anda minta -->
   <div class="video-widget" id="videoWidget" aria-live="polite">
     <div class="video-header">
       <div class="title">Live Stream</div>
-      <div class="small muted">Kamera Profil</div>
+      <div class="small muted">Kamera Profil (http://10.101.209.98)</div>
     </div>
 
     <div class="video-body" id="videoBody">
-      <!-- Video (HLS) -->
+      <!-- Browser akan mencoba memutar; fallback ke iframe jika perlu -->
       <video id="liveVideo" playsinline controls muted></video>
-      <!-- MJPEG fallback -->
       <img id="mjpegImg" class="mjpeg" style="display:none" alt="MJPEG stream">
-      <!-- iframe fallback -->
       <iframe id="iframeFallback" style="display:none" title="stream fallback"></iframe>
     </div>
 
@@ -92,8 +88,8 @@
   <section id="about" class="card">
     <h2>Tentang Saya</h2>
     <p><strong>Nama:</strong> DESMON DONALD SIAGIAN</p>
-    <p><strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, RT 06, RW 11 Taman Sari, Bandung, West Java, 40116.</p>
-    <p>Saya seorang guru Fisika dengan latar belakang Geophysics Engineering (ITB). Aktif di kegiatan organisasi, pelatihan pendidikan, dan pengembangan laboratorium.</p>
+    <p><strong>Alamat:</strong> JL.Kebun Kembang, Gang Kenanga No.8, Taman Sari, Bandung.</p>
+    <p>Saya seorang guru Fisika dengan latar belakang Geophysics Engineering (ITB). Aktif di kegiatan organisasi dan pelatihan pendidikan.</p>
   </section>
 
   <div class="grid">
@@ -102,27 +98,25 @@
         <h3>Pengalaman Kerja & Pendidikan</h3>
         <ul class="timeline">
           <li><strong>Guru</strong> — SMA BPK Penabur Holis (2016 - sekarang)</li>
-          <li><strong>Account Officer</strong> — PT Bank Mega, Tbk (2011 - 2014)</li>
-          <li><strong>Geophysics Engineering</strong> — Institut Teknologi Bandung (2003 - 2009)</li>
-          <li><strong>PT Smart Mediaware / LAPI ITB</strong> (2009 - 2010)</li>
+          <li><strong>Account Officer</strong> — PT Bank Mega (2011 - 2014)</li>
+          <li><strong>Geophysics Engineering</strong> — ITB (2003 - 2009)</li>
         </ul>
       </section>
 
       <section class="card">
         <h3>Aktivitas & Pelatihan</h3>
-        <p>Laboratory Management Workshop (2024), Teacher Creativity Seminar (2023), PENABUR EDU SUMMIT (2022), pelatihan Kurikulum 2013.</p>
+        <p>Laboratory Management Workshop (2024), Teacher Creativity Seminar (2023), PENABUR EDU SUMMIT (2022).</p>
       </section>
 
       <section id="skills" class="card">
         <h3>Keahlian</h3>
         <div class="skill"><span>Matlab / Fortran</span><strong>Menengah</strong></div>
         <div class="skill"><span>Microsoft Office</span><strong>Mahir</strong></div>
-        <div class="skill"><span>Manajemen Laboratorium</span><strong>Terlatih</strong></div>
       </section>
 
       <section class="card">
         <h3>Lembar Kerja & CV</h3>
-        <p class="small muted">Unggah PDF CV dan materi di server Anda lalu perbarui link di bawah.</p>
+        <p class="small muted">Unggah PDF CV ke server Anda lalu perbarui link di bawah.</p>
         <p><a href="#" id="downloadCv">Unduh CV (PDF)</a></p>
       </section>
     </div>
@@ -144,19 +138,16 @@
 </main>
 
 <footer>
-  <div class="container small muted">Halaman ini menampilkan CV interaktif dan live stream. Pastikan stream tersedia lewat HTTPS.</div>
+  <div class="container small muted">Halaman ini memuat stream dari http://10.101.209.98 — baca catatan penting di bawah jika stream tidak tampil.</div>
 </footer>
 
-<!-- hls.js CDN untuk HLS playback -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
 <script>
-/*
-  PENTING:
-  - Pastikan stream tersedia lewat HTTPS untuk menghindari Mixed Content.
-  - Ganti SECURE_STREAM_URL dengan URL HTTPS stream Anda (contoh: 'https://stream.example.com/stream.m3u8').
-  - Jika stream adalah RTSP, konversi ke HLS (ffmpeg) atau gunakan proxy yang menyediakan HTTPS.
+/* 
+  Kode ini mencoba beberapa pola umum untuk sumber stream di alamat http://10.101.209.98
+  NOTE: Jika halaman Anda diakses lewat HTTPS, browser akan memblokir permintaan ke http://10.101.209.98 (Mixed Content).
+  Untuk uji lokal, jalankan file ini lewat HTTP (lihat catatan di bawah).
 */
-const SECURE_STREAM_URL = 'https://stream.example.com/stream.m3u8'; // <-- GANTI DENGAN HTTPS STREAM ANDA
+const VIDEO_BASE = 'http://10.101.209.98'; // alamat yang Anda minta
 
 const video = document.getElementById('liveVideo');
 const mjpegImg = document.getElementById('mjpegImg');
@@ -171,65 +162,70 @@ const snapshotImg = document.getElementById('snapshotImg');
 
 function setStatus(t){ status.textContent = t; }
 
-/* Inisialisasi pemutaran HLS (HTTPS) */
-(function init(){
-  if(!SECURE_STREAM_URL || SECURE_STREAM_URL === '' || SECURE_STREAM_URL.startsWith('http://')){
-    setStatus('Periksa SECURE_STREAM_URL (harus HTTPS).');
-    // tampilkan iframe fallback jika HTTPS tidak tersedia
-    if(SECURE_STREAM_URL && SECURE_STREAM_URL.startsWith('http://')){
-      iframe.src = SECURE_STREAM_URL;
-      iframe.style.display = 'block';
-      video.style.display = 'none';
-      mjpegImg.style.display = 'none';
-    }
-    return;
-  }
+/* Kandidat path umum pada server kamera/encoder */
+const candidates = [
+  VIDEO_BASE,
+  VIDEO_BASE + '/stream.m3u8',
+  VIDEO_BASE + '/hls/stream.m3u8',
+  VIDEO_BASE + '/video.mp4',
+  VIDEO_BASE + ':8080/?action=stream',
+  VIDEO_BASE + ':8080/stream',
+  VIDEO_BASE + ':8000/stream.m3u8',
+  VIDEO_BASE + '/?action=stream'
+];
 
-  // Jika URL mengandung .m3u8 gunakan hls.js
-  if(SECURE_STREAM_URL.includes('.m3u8')){
-    if(Hls.isSupported()){
-      const hls = new Hls({maxBufferLength: 30});
-      hls.loadSource(SECURE_STREAM_URL);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, ()=> { video.play().catch(()=>{}); setStatus('Live (HLS)'); });
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        console.warn('HLS error', event, data);
-        setStatus('Error HLS: ' + (data && data.type ? data.type : 'unknown'));
-      });
-    } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-      video.src = SECURE_STREAM_URL;
-      video.addEventListener('loadedmetadata', ()=> video.play().catch(()=>{}));
-      setStatus('Live (HLS native)');
-    } else {
-      setStatus('Browser tidak mendukung HLS');
-    }
-    return;
-  }
-
-  // Jika URL menunjuk ke file mp4
-  if(SECURE_STREAM_URL.endsWith('.mp4')){
-    video.src = SECURE_STREAM_URL;
+function tryMP4(src){
+  if(!src) return false;
+  if(src.endsWith('.mp4') || src.includes('.mp4')){
+    video.src = src;
     video.addEventListener('loadeddata', ()=> { video.play().catch(()=>{}); setStatus('Live (MP4)'); });
     video.addEventListener('error', ()=> setStatus('MP4 tidak dapat diputar'));
-    return;
+    return true;
   }
+  return false;
+}
 
-  // Jika URL MJPEG (heuristik)
-  if(SECURE_STREAM_URL.includes('mjpeg') || SECURE_STREAM_URL.includes('mjpg') || SECURE_STREAM_URL.includes('action=stream')){
-    mjpegImg.src = SECURE_STREAM_URL;
+function tryMJPEG(src){
+  if(!src) return false;
+  if(src.includes('mjpeg') || src.includes('mjpg') || src.includes('action=stream') || src.includes('stream')){
+    mjpegImg.src = src;
     mjpegImg.style.display = 'block';
     video.style.display = 'none';
     iframe.style.display = 'none';
     setStatus('Live (MJPEG)');
-    return;
+    return true;
   }
+  return false;
+}
 
-  // fallback iframe
-  iframe.src = SECURE_STREAM_URL;
+function tryIframe(src){
+  iframe.src = src;
   iframe.style.display = 'block';
   video.style.display = 'none';
   mjpegImg.style.display = 'none';
   setStatus('Fallback iframe (cek path)');
+}
+
+/* Inisialisasi: coba kandidat sederhana */
+(function init(){
+  let used=false;
+  for(const c of candidates){
+    try {
+      if(tryMP4(c) || tryMJPEG(c)){ used=true; break; }
+    } catch(e){
+      console.warn('coba kandidat gagal', c, e);
+    }
+  }
+  if(!used){
+    // tampilkan iframe ke alamat dasar sebagai fallback
+    tryIframe(VIDEO_BASE);
+    setStatus('Coba fallback; jika diblokir oleh browser, lihat catatan Mixed Content di bawah.');
+  }
+
+  video.addEventListener('playing', ()=> setStatus('Live'));
+  video.addEventListener('pause', ()=> setStatus('Terhenti'));
+  video.addEventListener('loadeddata', ()=> setStatus('Siap'));
+  video.addEventListener('error', ()=> setStatus('Error memuat video (cek path/protokol)'));
 })();
 
 /* Kontrol UI */
@@ -273,8 +269,22 @@ btnFullscreen.addEventListener('click', async ()=>{
 /* Placeholder unduh CV */
 document.getElementById('downloadCv').addEventListener('click', (e)=>{
   e.preventDefault();
-  alert('Unggah file PDF CV Anda ke server dan perbarui atribut href link ini.');
+  alert('Unggah file PDF CV Anda ke server dan perbarui link ini.');
 });
 </script>
+
+<!--
+  CATATAN PENTING (BACA):
+  1) Jika halaman ini dibuka lewat HTTPS (mis. GitHub Pages), browser akan memblokir permintaan ke http://10.101.209.98 (Mixed Content).
+     - Untuk uji cepat: jalankan file ini secara lokal lewat HTTP:
+         * Python 3: python -m http.server 8000
+         * Node: npx http-server . -p 8000
+       lalu buka http://localhost:8000/index.html
+  2) Solusi produksi (direkomendasikan):
+     - Buat reverse proxy HTTPS (nginx) atau konversi RTSP->HLS (ffmpeg) dan layani stream lewat HTTPS (contoh: https://stream.example.com/stream.m3u8).
+     - Atau gunakan tunnel HTTPS sementara (ngrok / Cloudflare Tunnel) untuk membuat URL https://... yang meneruskan ke http://10.101.209.98.
+  3) Jika stream kamera menggunakan RTSP, browser tidak memutar RTSP langsung. Gunakan ffmpeg untuk membuat HLS atau proxy yang mengonversi ke format web.
+  4) Jika Anda ingin, saya bisa bantu buatkan perintah ffmpeg atau konfigurasi nginx setelah Anda konfirmasi apakah stream di VLC muncul sebagai RTSP atau HTTP.
+-->
 </body>
 </html>
