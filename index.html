@@ -76,10 +76,10 @@
 <script>
 /* CONFIG:
    - Untuk uji lokal: leave HTTP_BASE = 'http://10.101.209.98'
-   - Untuk produksi (HTTPS): set SECURE_HLS = 'https://stream.example.com/stream.m3u8' (ganti sesuai)
+   - Untuk produksi (HTTPS): set SECURE_HLS = 'http://10.101.209.98' (ganti sesuai)
 */
 const HTTP_BASE = 'http://10.101.209.98';
-const SECURE_HLS = ''; // jika sudah punya HTTPS HLS, masukkan di sini, mis. 'https://stream.example.com/stream.m3u8'
+const SECURE_HLS = ''; // jika sudah punya HTTPS HLS, masukkan di sini, mis. 'http://10.101.209.98'
 
 const player = document.getElementById('player');
 const mjpeg = document.getElementById('mjpeg');
