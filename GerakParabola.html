@@ -62,7 +62,7 @@
             border-radius: 28px;
             padding: 24px 22px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
         }
         .control-panel h2 {
@@ -111,7 +111,7 @@
             background: radial-gradient(circle, #f5c842, #dba42b);
             border-radius: 50%;
             border: 2px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
         .btn-group {
             display: grid;
@@ -119,7 +119,9 @@
             gap: 10px;
             margin-top: 10px;
         }
-        .btn-simulate, .btn-slowmo, .btn-vector {
+        .btn-simulate,
+        .btn-slowmo,
+        .btn-vector {
             padding: 12px;
             border: none;
             border-radius: 60px;
@@ -193,7 +195,7 @@
             border-radius: 28px;
             padding: 12px;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: inset 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.5);
             position: relative;
         }
         canvas {
@@ -241,7 +243,7 @@
             position: absolute;
             bottom: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             padding: 8px 14px;
             border-radius: 12px;
             color: #fff;
@@ -249,7 +251,7 @@
             display: none;
             gap: 16px;
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .legend-vektor.show {
             display: flex;
@@ -269,7 +271,7 @@
             background: rgba(10, 25, 40, 0.5);
             border-radius: 28px;
             padding: 24px 28px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(4px);
         }
         .materi-section h2 {
@@ -487,6 +489,7 @@
     </div>
 
     <script>
+        // ================ SCRIPT LENGKAP ================
         (function() {
             const canvas = document.getElementById('parabolaCanvas');
             const ctx = canvas.getContext('2d');
@@ -573,12 +576,14 @@
                 const h = canvas.height;
                 ctx.clearRect(0, 0, w, h);
 
+                // Background
                 const grad = ctx.createLinearGradient(0, 0, 0, h);
                 grad.addColorStop(0, '#0a1f2e');
                 grad.addColorStop(0.8, '#152b3d');
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, 0, w, h);
 
+                // Rumput
                 ctx.fillStyle = '#1c3d2e';
                 ctx.fillRect(0, h - 60, w, 60);
                 for (let i = 0; i < w; i += 40) {
@@ -586,6 +591,7 @@
                     ctx.fillRect(i, h - 60, 20, 60);
                 }
 
+                // Gawang
                 ctx.strokeStyle = '#f0f0f0';
                 ctx.lineWidth = 3;
                 ctx.strokeRect(w - 80, h - 60 - 60, 70, 60);
@@ -608,6 +614,7 @@
                     return { cx: originX + x * scaleX, cy: originY - y * scaleY };
                 };
 
+                // Lintasan penuh (bayangan)
                 ctx.beginPath();
                 ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
                 ctx.lineWidth = 2;
@@ -623,6 +630,7 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
 
+                // Lintasan aktif
                 const maxProgress = Math.min(progress, 1);
                 const points = [];
                 for (let t = 0; t <= maxProgress * tTotal; t += 0.015) {
@@ -647,6 +655,7 @@
                     ctx.shadowBlur = 0;
                 }
 
+                // Vektor
                 if (showVectors && points.length > 3) {
                     const idx = Math.min(Math.floor(points.length * 0.3), points.length - 1);
                     const p = points[idx];
@@ -666,10 +675,7 @@
                     drawVector(ctx, cx, cy, 0, vyDraw, '#ffe66d', 'Vy');
 
                     ctx.fillStyle = 'rgba(0,0,0,0.75)';
-                    ctx.beginPath();
-                    // Menggunakan rect biasa karena roundRect mungkin tidak support
-                    ctx.rect(cx - 90, cy + 30, 180, 65);
-                    ctx.fill();
+                    ctx.fillRect(cx - 90, cy + 30, 180, 65);
 
                     ctx.fillStyle = '#fff';
                     ctx.font = '11px sans-serif';
@@ -682,6 +688,7 @@
                     ctx.fill();
                 }
 
+                // Bola
                 if (points.length > 0) {
                     const last = points[points.length - 1];
                     const { cx, cy } = toCanvas(last.x, last.y);
@@ -713,6 +720,7 @@
                     ctx.stroke();
                 }
 
+                // Titik penting
                 const tPeak = v0y / g;
                 const xPeak = v0x * tPeak;
                 const yPeak = yMax;
@@ -738,11 +746,13 @@
                     ctx.fillText('Jarak Maks', cx - 30, cy - 18);
                 }
 
+                // Label sumbu
                 ctx.fillStyle = '#b0cce0';
                 ctx.font = '12px sans-serif';
                 ctx.fillText('Jarak (m)', w - 100, h - 12);
                 ctx.fillText('Tinggi (m)', 10, 30);
 
+                // Skala sumbu X
                 ctx.strokeStyle = 'rgba(200,220,240,0.2)';
                 ctx.lineWidth = 1;
                 for (let i = 0; i <= maxX; i += maxX / 6) {
@@ -785,7 +795,7 @@
                 animate(v0, angleDeg);
             }
 
-            // Event Listeners
+            // ============ EVENT LISTENERS ============
             speedSlider.addEventListener('input', updateAndSimulate);
             angleSlider.addEventListener('input', updateAndSimulate);
 
@@ -797,15 +807,4 @@
                 updateStats(v0, angleDeg);
                 if (animId) cancelAnimationFrame(animId);
                 animate(v0, angleDeg);
-                this.style.transform = 'scale(0.96)';
-                setTimeout(() => this.style.transform = '', 100);
-            });
-
-            slowmoBtn.addEventListener('click', function() {
-                isSlowMo = !isSlowMo;
-                this.classList.toggle('active');
-                this.innerHTML = isSlowMo ?
-                    '<i class="fas fa-rocket"></i> Kecepatan Normal' :
-                    '<i class="fas fa-turtle"></i> Slow Motion';
-                if (animId) {
-                   
+                this.style.transform = 'scale(0.96)
