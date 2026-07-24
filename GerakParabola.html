@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulasi Gerak Parabola - Piala Dunia 2026</title>
-  <!-- Font Awesome untuk ikon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -24,7 +23,7 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       width: 100%;
       background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px);
@@ -32,7 +31,6 @@
       padding: 30px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: all 0.3s ease;
     }
 
     h1 {
@@ -67,7 +65,6 @@
       gap: 28px;
     }
 
-    /* Panel Kontrol */
     .control-panel {
       background: rgba(10, 20, 35, 0.7);
       border-radius: 28px;
@@ -92,7 +89,7 @@
     }
 
     .slider-group {
-      margin-bottom: 28px;
+      margin-bottom: 20px;
     }
 
     .slider-group label {
@@ -133,24 +130,44 @@
       transition: 0.08s;
     }
 
-    .btn-simulate {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #f5c842, #e6b13a);
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-simulate, .btn-slowmo {
+      padding: 12px;
       border: none;
       border-radius: 60px;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 700;
-      color: #0d1b2a;
       letter-spacing: 1px;
-      box-shadow: 0 6px 0 #a77d2a, 0 6px 16px rgba(0,0,0,0.4);
       transition: all 0.08s ease;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      margin-top: 10px;
+      gap: 8px;
+    }
+
+    .btn-simulate {
+      background: linear-gradient(135deg, #f5c842, #e6b13a);
+      color: #0d1b2a;
+      box-shadow: 0 6px 0 #a77d2a, 0 6px 16px rgba(0,0,0,0.4);
+      grid-column: span 2;
+    }
+
+    .btn-slowmo {
+      background: linear-gradient(135deg, #4a90d9, #357abd);
+      color: #fff;
+      box-shadow: 0 4px 0 #1e4f7a, 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .btn-slowmo.active {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      box-shadow: 0 4px 0 #922b21;
     }
 
     .btn-simulate:active {
@@ -158,12 +175,21 @@
       box-shadow: 0 2px 0 #a77d2a;
     }
 
-    .btn-simulate i {
-      font-size: 1.3rem;
+    .btn-slowmo:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #1e4f7a;
+    }
+
+    .btn-slowmo.active:active {
+      box-shadow: 0 2px 0 #922b21;
+    }
+
+    .btn-simulate i, .btn-slowmo i {
+      font-size: 1.1rem;
     }
 
     .info-tip {
-      margin-top: 22px;
+      margin-top: 20px;
       padding: 16px 18px;
       background: rgba(30, 60, 90, 0.4);
       border-left: 5px solid #f5c842;
@@ -177,7 +203,6 @@
       margin-right: 8px;
     }
 
-    /* Panel Hasil & Grafik */
     .result-panel {
       display: flex;
       flex-direction: column;
@@ -190,6 +215,7 @@
       padding: 12px;
       border: 1px solid rgba(255, 255, 255, 0.06);
       box-shadow: inset 0 4px 12px rgba(0,0,0,0.5);
+      position: relative;
     }
 
     canvas {
@@ -233,12 +259,6 @@
       line-height: 1.2;
     }
 
-    .stat-card .value small {
-      font-size: 0.8rem;
-      font-weight: 400;
-      color: #a0c4e8;
-    }
-
     .stat-card .unit {
       color: #7a9bb5;
       font-size: 0.7rem;
@@ -248,7 +268,6 @@
       border-bottom: 3px solid #f5c842;
     }
 
-    /* Materi & Contoh Soal */
     .materi-section {
       margin-top: 32px;
       background: rgba(10, 25, 40, 0.5);
@@ -353,6 +372,33 @@
       margin-right: 6px;
     }
 
+    .legend-vektor {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.7);
+      padding: 8px 14px;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.75rem;
+      display: flex;
+      gap: 16px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .legend-vektor span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-vektor .color-box {
+      width: 20px;
+      height: 4px;
+      border-radius: 2px;
+    }
+
     @media (max-width: 860px) {
       .grid-2 {
         grid-template-columns: 1fr;
@@ -366,6 +412,12 @@
       h1 {
         font-size: 1.8rem;
       }
+      .btn-group {
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-simulate {
+        grid-column: span 2;
+      }
     }
 
     @media (max-width: 480px) {
@@ -374,6 +426,12 @@
       }
       .stats-grid {
         grid-template-columns: 1fr 1fr;
+      }
+      .btn-group {
+        grid-template-columns: 1fr;
+      }
+      .btn-simulate {
+        grid-column: span 1;
       }
     }
   </style>
@@ -385,7 +443,6 @@
   <div class="subtitle">⚡ Piala Dunia 2026 Edition • Fisika SMA Kelas 10</div>
 
   <div class="grid-2">
-    <!-- KONTROL -->
     <div class="control-panel">
       <h2><i class="fas fa-sliders-h"></i> Kontrol Simulasi</h2>
       <div class="slider-group">
@@ -396,18 +453,29 @@
         <label>Sudut Elevasi (θ) <span id="angleDisplay">45</span>°</label>
         <input type="range" id="angleSlider" min="5" max="85" value="45" step="0.5">
       </div>
-      <button class="btn-simulate" id="simulateBtn"><i class="fas fa-play"></i> TENDANG!</button>
+      
+      <div class="btn-group">
+        <button class="btn-simulate" id="simulateBtn"><i class="fas fa-play"></i> TENDANG!</button>
+        <button class="btn-slowmo" id="slowmoBtn"><i class="fas fa-turtle"></i> Slow Motion</button>
+        <button class="btn-slowmo" id="vectorBtn" style="grid-column: span 2; background: linear-gradient(135deg, #27ae60, #1e8449); box-shadow: 0 4px 0 #145a32;">
+          <i class="fas fa-arrow-right"></i> Tampilkan Vektor
+        </button>
+      </div>
       
       <div class="info-tip">
         <i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Sudut 45° memberikan jarak tembak terjauh! 
-        Coba variasikan kecepatan dan sudut.
+        Gunakan tombol Slow Motion untuk melihat detail lintasan dan vektor gaya.
       </div>
     </div>
 
-    <!-- HASIL & GRAFIK -->
     <div class="result-panel">
       <div class="canvas-wrapper">
-        <canvas id="parabolaCanvas" width="800" height="450"></canvas>
+        <canvas id="parabolaCanvas" width="900" height="500"></canvas>
+        <div class="legend-vektor" id="legendVektor" style="display:none;">
+          <span><span class="color-box" style="background:#ff6b6b;"></span> V₀ (Kecepatan)</span>
+          <span><span class="color-box" style="background:#4ecdc4;"></span> Vx (Sumbu X)</span>
+          <span><span class="color-box" style="background:#ffe66d;"></span> Vy (Sumbu Y)</span>
+        </div>
       </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="label">Jarak Maks</div><div class="value" id="jarakValue">62.5</div><div class="unit">meter</div></div>
@@ -418,7 +486,6 @@
     </div>
   </div>
 
-  <!-- MATERI & CONTOH SOAL -->
   <div class="materi-section">
     <h2><i class="fas fa-graduation-cap"></i> Materi & Contoh Soal</h2>
     <div class="materi-grid">
@@ -463,7 +530,6 @@
     const canvas = document.getElementById('parabolaCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Elemen tampilan
     const speedSlider = document.getElementById('speedSlider');
     const angleSlider = document.getElementById('angleSlider');
     const speedDisplay = document.getElementById('speedDisplay');
@@ -472,18 +538,19 @@
     const tinggiValue = document.getElementById('tinggiValue');
     const waktuValue = document.getElementById('waktuValue');
     const optimalAngle = document.getElementById('optimalAngle');
+    const slowmoBtn = document.getElementById('slowmoBtn');
+    const vectorBtn = document.getElementById('vectorBtn');
+    const legendVektor = document.getElementById('legendVektor');
 
-    // Konstanta
-    const g = 10; // m/s²
-
-    // State
+    const g = 10;
     let v0 = 25;
     let angleDeg = 45;
     let animId = null;
-    let startTime = null;
-    let trajectory = [];
+    let isSlowMo = false;
+    let showVectors = false;
+    let animationProgress = 0;
+    let isAnimating = false;
 
-    // Fungsi hitung
     function calculate(v0, angleDeg) {
       const theta = angleDeg * Math.PI / 180;
       const v0x = v0 * Math.cos(theta);
@@ -494,30 +561,69 @@
       return { v0x, v0y, tTotal, xMax, yMax };
     }
 
-    // Update tampilan statistik
     function updateStats(v0, angleDeg) {
       const { tTotal, xMax, yMax } = calculate(v0, angleDeg);
       jarakValue.textContent = xMax.toFixed(1);
       tinggiValue.textContent = yMax.toFixed(1);
       waktuValue.textContent = tTotal.toFixed(2);
-      // Sudut optimal (45° selalu optimal untuk jarak)
       optimalAngle.textContent = '45°';
     }
 
-    // Gambar lintasan + animasi
+    function drawVector(ctx, x, y, dx, dy, color, label, scale = 1) {
+      const len = Math.sqrt(dx*dx + dy*dy);
+      if (len < 0.1) return;
+      
+      const normDx = dx / len;
+      const normDy = dy / len;
+      const arrowLen = Math.min(len * scale, 60);
+      const endX = x + normDx * arrowLen;
+      const endY = y - normDy * arrowLen;
+
+      // Garis vektor
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 8;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Mata panah
+      const angle = Math.atan2(-normDy, normDx);
+      const headLen = 10;
+      const headAngle = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(endX, endY);
+      ctx.lineTo(endX - headLen * Math.cos(angle - headAngle), endY + headLen * Math.sin(angle - headAngle));
+      ctx.moveTo(endX, endY);
+      ctx.lineTo(endX - headLen * Math.cos(angle + headAngle), endY + headLen * Math.sin(angle + headAngle));
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Label
+      if (label) {
+        ctx.fillStyle = color;
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText(label, endX + 8, endY - 8);
+      }
+    }
+
     function drawTrajectory(v0, angleDeg, progress = 1) {
       const w = canvas.width;
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // --- Latar belakang (gradien) ---
+      // Background
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#0a1f2e');
       grad.addColorStop(0.8, '#152b3d');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Garis lapangan (rumput)
+      // Rumput
       ctx.fillStyle = '#1c3d2e';
       ctx.fillRect(0, h-60, w, 60);
       for (let i=0; i<w; i+=40) {
@@ -525,7 +631,7 @@
         ctx.fillRect(i, h-60, 20, 60);
       }
 
-      // Gambar gawang sederhana
+      // Gawang
       ctx.strokeStyle = '#f0f0f0';
       ctx.lineWidth = 3;
       ctx.strokeRect(w-80, h-60-60, 70, 60);
@@ -533,26 +639,23 @@
       ctx.lineWidth = 1;
       ctx.strokeRect(w-80+10, h-60-60+10, 50, 40);
 
-      // --- Hitung data ---
       const { v0x, v0y, tTotal, xMax, yMax } = calculate(v0, angleDeg);
       
-      // Skala agar pas di canvas
       const marginX = 70, marginY = 40;
       const maxX = Math.max(xMax, 10);
       const maxY = Math.max(yMax, 2);
       const scaleX = (w - marginX * 2) / maxX;
-      const scaleY = (h - marginY * 2 - 40) / maxY; // -40 untuk rumput
+      const scaleY = (h - marginY * 2 - 40) / maxY;
       const originX = marginX;
       const originY = h - marginY - 40;
 
-      // Fungsi konversi
       const toCanvas = (x, y) => {
         return { cx: originX + x * scaleX, cy: originY - y * scaleY };
       };
 
-      // --- Gambar lintasan penuh (garis tipis) ---
+      // Lintasan penuh (bayangan)
       ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255, 215, 0, 0.25)';
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 6]);
       for (let t = 0; t <= tTotal; t += 0.02) {
@@ -566,21 +669,17 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // --- Lintasan aktif (progress) ---
+      // Lintasan aktif
       const maxProgress = Math.min(progress, 1);
-      const totalPoints = 120;
-      const step = maxProgress / totalPoints;
-      
-      // Kumpulkan titik untuk animasi
       const points = [];
       for (let t = 0; t <= maxProgress * tTotal; t += 0.015) {
         const x = v0x * t;
         const y = v0y * t - 0.5 * g * t * t;
         if (y < 0) break;
-        points.push({ x, y });
+        points.push({ x, y, t });
       }
 
-      // Gambar lintasan aktif (tebal)
+      // Gambar lintasan aktif
       if (points.length > 1) {
         ctx.beginPath();
         ctx.strokeStyle = '#f5c842';
@@ -596,11 +695,50 @@
         ctx.shadowBlur = 0;
       }
 
-      // Gambar bola (di titik akhir lintasan)
+      // Gambar vektor jika aktif
+      if (showVectors && points.length > 0) {
+        const idx = Math.min(Math.floor(points.length * 0.3), points.length - 1);
+        const p = points[idx];
+        const { cx, cy } = toCanvas(p.x, p.y);
+        
+        // Kecepatan saat ini
+        const t = p.t;
+        const vx = v0x;
+        const vy = v0y - g * t;
+        const vTotal = Math.sqrt(vx*vx + vy*vy);
+        
+        // Skala vektor (disesuaikan)
+        const vecScale = 2.5;
+        const vxDraw = vx * vecScale;
+        const vyDraw = vy * vecScale;
+        
+        // Vektor total (merah)
+        drawVector(ctx, cx, cy, vxDraw, vyDraw, '#ff6b6b', 'V₀', 1);
+        // Vektor X (cyan)
+        drawVector(ctx, cx, cy, vxDraw, 0, '#4ecdc4', 'Vx', 0.7);
+        // Vektor Y (kuning)
+        drawVector(ctx, cx, cy, 0, vyDraw, '#ffe66d', 'Vy', 0.7);
+        
+        // Informasi nilai vektor
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(cx - 80, cy + 30, 160, 60);
+        ctx.fillStyle = '#fff';
+        ctx.font = '11px sans-serif';
+        ctx.fillText(`V₀ = ${vTotal.toFixed(1)} m/s`, cx - 70, cy + 50);
+        ctx.fillText(`Vx = ${vx.toFixed(1)} m/s, Vy = ${vy.toFixed(1)} m/s`, cx - 70, cy + 72);
+        
+        // Lingkaran di titik vektor
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
+
+      // Gambar bola
       if (points.length > 0) {
         const last = points[points.length-1];
         const { cx, cy } = toCanvas(last.x, last.y);
-        // Efek glow
+        
         const gradient = ctx.createRadialGradient(cx-3, cy-3, 2, cx, cy, 18);
         gradient.addColorStop(0, '#ffffff');
         gradient.addColorStop(0.3, '#f5c842');
@@ -617,7 +755,7 @@
         ctx.shadowBlur = 24;
         ctx.fill();
         ctx.shadowBlur = 0;
-        // Garis hitam putih pada bola
+        
         ctx.strokeStyle = '#1a1a2c';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
@@ -628,8 +766,7 @@
         ctx.stroke();
       }
 
-      // --- Titik-titik penting ---
-      // Titik tertinggi
+      // Titik penting
       const tPeak = v0y / g;
       const xPeak = v0x * tPeak;
       const yPeak = yMax;
@@ -644,7 +781,6 @@
         ctx.fillText('Titik Tertinggi', cx-40, cy-18);
       }
 
-      // Titik jatuh (jarak maks)
       if (xMax > 0) {
         const { cx, cy } = toCanvas(xMax, 0);
         ctx.fillStyle = '#ff6b6b';
@@ -677,26 +813,27 @@
       }
     }
 
-    // Animasi
     function animate(v0, angleDeg) {
       if (animId) cancelAnimationFrame(animId);
       const start = performance.now();
-      const duration = 1600; // ms
+      const duration = isSlowMo ? 4000 : 1600;
+      isAnimating = true;
 
       function frame(now) {
         const elapsed = (now - start) / duration;
         const progress = Math.min(elapsed, 1);
+        animationProgress = progress;
         drawTrajectory(v0, angleDeg, progress);
         if (progress < 1) {
           animId = requestAnimationFrame(frame);
         } else {
           animId = null;
+          isAnimating = false;
         }
       }
       animId = requestAnimationFrame(frame);
     }
 
-    // Event update
     function updateAndSimulate() {
       v0 = parseFloat(speedSlider.value);
       angleDeg = parseFloat(angleSlider.value);
@@ -707,37 +844,5 @@
       animate(v0, angleDeg);
     }
 
-    speedSlider.addEventListener('input', updateAndSimulate);
-    angleSlider.addEventListener('input', updateAndSimulate);
-    document.getElementById('simulateBtn').addEventListener('click', function() {
-      v0 = parseFloat(speedSlider.value);
-      angleDeg = parseFloat(angleSlider.value);
-      speedDisplay.textContent = v0;
-      angleDisplay.textContent = angleDeg;
-      updateStats(v0, angleDeg);
-      if (animId) cancelAnimationFrame(animId);
-      animate(v0, angleDeg);
-      // Efek getar tombol
-      this.style.transform = 'scale(0.96)';
-      setTimeout(() => this.style.transform = '', 100);
-    });
-
-    // Inisialisasi
-    updateAndSimulate();
-
-    // Resize canvas responsif (biarkan aspek rasio)
-    function resizeCanvas() {
-      const wrapper = canvas.parentElement;
-      const w = wrapper.clientWidth - 24;
-      const ratio = 16/9;
-      canvas.style.width = w + 'px';
-      canvas.style.height = (w / ratio) + 'px';
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-  })();
-</script>
-
-</body>
-</html>
+    // Event listeners
+    speedSlider.addEventListener
