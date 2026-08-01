@@ -1,1 +1,310 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>HSK1 Quiz Interaktif — 100 Soal</title>
+<style>
+  :root{
+    --bg:#f7fbff; --card:#ffffff; --accent:#ff6b6b; --muted:#6b7280;
+    --glass: rgba(255,255,255,0.7);
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  body{margin:0;background:linear-gradient(180deg,#eef7ff 0%,#ffffff 100%);color:#0f172a;}
+  header{display:flex;gap:16px;align-items:center;padding:20px;max-width:1100px;margin:18px auto;}
+  .banner{display:flex;align-items:center;gap:16px;}
+  .banner img{width:120px;height:80px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.08);}
+  .title{line-height:1;}
+  .title h1{margin:0;font-size:20px;}
+  .title p{margin:4px 0 0;color:var(--muted);font-size:13px;}
+  main{max-width:1100px;margin:0 auto;padding:20px;}
+  .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(15,23,42,0.06);}
+  .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .progress{flex:1;height:10px;background:#eef2ff;border-radius:999px;margin:0 12px;overflow:hidden}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ff9a9a);width:0%;}
+  .question-area{display:grid;grid-template-columns:1fr 320px;gap:18px;}
+  .qbox{padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.9),var(--glass));}
+  .qtext{font-size:22px;font-weight:600;margin-bottom:8px;}
+  .pinyin{color:var(--muted);margin-bottom:8px;}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .choice{padding:10px;border-radius:8px;border:1px solid #eef2ff;background:#fff;cursor:pointer;transition:all .18s;}
+  .choice:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(15,23,42,0.06);}
+  .choice.correct{border-color:#16a34a;background:#ecfdf5;}
+  .choice.wrong{border-color:#ef4444;background:#fff1f2;}
+  .side{padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfdff);height:100%;}
+  .vocab-card{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+  .vocab-card img{width:72px;height:72px;border-radius:8px;object-fit:cover;}
+  .vocab-text{line-height:1;}
+  .vocab-text b{display:block;font-size:18px;}
+  .controls{display:flex;gap:8px;align-items:center;margin-top:12px;}
+  .btn{padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;cursor:pointer;}
+  .btn.ghost{background:#fff;border:1px solid #e6eefc;color:var(--muted);}
+  footer{max-width:1100px;margin:18px auto;padding:12px;color:var(--muted);font-size:13px;}
+  .summary{display:none;padding:18px;border-radius:12px;background:#fff;margin-top:12px;}
+  .summary.show{display:block;}
+  @media(max-width:900px){
+    .question-area{grid-template-columns:1fr;}
+    .side{order:2;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="banner">
+    <img src="images/banner.png" alt="Banner HSK1">
+    <div class="title">
+      <h1>HSK1 Quiz Interaktif — 100 Soal</h1>
+      <p>Soal PG A–E; pinyin & terjemahan Indonesia tampil; urut dari mudah ke sulit.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="meta">
+      <div><strong id="qIndex">Soal 1</strong> dari <strong>100</strong></div>
+      <div style="display:flex;align-items:center;">
+        <small style="color:var(--muted);">Skor</small>
+        <div style="width:56px;text-align:center;margin-left:8px;"><strong id="score">0</strong>/100</div>
+      </div>
+    </div>
+
+    <div class="progress"><i id="progressBar"></i></div>
+
+    <div class="question-area" style="margin-top:14px;">
+      <div class="qbox">
+        <div class="qtext" id="questionText">[Karakter Hanzi]</div>
+        <div class="pinyin" id="questionPinyin">[pinyin]</div>
+        <div style="color:var(--muted);margin-bottom:10px;" id="questionIndo">[arti bahasa Indonesia]</div>
+
+        <div class="choices" id="choices">
+          <!-- pilihan akan di-render di sini -->
+        </div>
+
+        <div class="controls">
+          <button class="btn ghost" id="skipBtn">Lewati</button>
+          <button class="btn" id="nextBtn" disabled>Lanjut</button>
+        </div>
+
+        <div style="margin-top:12px;color:var(--muted);font-size:13px;">
+          Pilih jawaban lalu klik Lanjut. Umpan balik akan muncul langsung.
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="vocab-card">
+          <img id="vocabImg" src="images/card-placeholder.png" alt="vocab">
+          <div class="vocab-text">
+            <b id="vocabHanzi">我</b>
+            <div id="vocabPinyin">wǒ</div>
+            <div style="color:var(--muted);" id="vocabIndo">saya, aku</div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px;">
+          <strong>Petunjuk cepat</strong>
+          <ul style="color:var(--muted);padding-left:18px;margin-top:8px;">
+            <li>Soal disusun dari mudah ke sulit.</li>
+            <li>Setiap jawaban benar = 1 poin.</li>
+            <li>Gunakan tombol <em>Lewati</em> jika ragu.</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:12px;">
+          <strong>Ringkasan</strong>
+          <div style="color:var(--muted);margin-top:6px;font-size:13px;">
+            Benar: <span id="correctCount">0</span><br>
+            Salah: <span id="wrongCount">0</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="summary" id="finalSummary">
+      <h3>Hasil Akhir</h3>
+      <p id="finalText"></p>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn" id="retryBtn">Ulangi Kuiz</button>
+        <button class="btn ghost" id="reviewBtn">Tinjau Jawaban Salah</button>
+      </div>
+      <div id="mistakes" style="margin-top:12px;color:var(--muted);"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div><strong>Catatan</strong>: Ganti gambar di folder <code>images/</code> untuk personalisasi. Untuk menambah audio pinyin, tambahkan file audio dan panggilnya saat menampilkan soal.</div>
+</footer>
+
+<script>
+/* ===== Data contoh (untuk demo) =====
+   Untuk versi final, masukkan 100 soal lengkap (Hanzi, pinyin, indo, pilihan A-E, jawaban benar, image).
+   Di bawah ini contoh 8 soal; ganti array 'questions' dengan 100 soal Anda.
+*/
+const questions = [
+  {id:1,hanzi:"我",pinyin:"wǒ",indo:"saya, aku",choices:["kamu","saya","dia","kita","mereka"],answer:1,img:"images/card-wo.png"},
+  {id:2,hanzi:"你",pinyin:"nǐ",indo:"kamu",choices:["saya","kamu","dia","kami","mereka"],answer:1,img:"images/card-ni.png"},
+  {id:3,hanzi:"他",pinyin:"tā",indo:"dia (laki-laki)",choices:["dia (perempuan)","dia (laki-laki)","kami","kalian","itu"],answer:1,img:"images/card-ta.png"},
+  {id:4,hanzi:"苹果",pinyin:"píngguǒ",indo:"apel",choices:["apel","pisang","jeruk","anggur","mangga"],answer:0,img:"images/card-apple.png"},
+  {id:5,hanzi:"学校",pinyin:"xuéxiào",indo:"sekolah",choices:["rumah","sekolah","toko","rumah sakit","restoran"],answer:1,img:"images/card-school.png"},
+  {id:6,hanzi:"谢谢",pinyin:"xièxie",indo:"terima kasih",choices:["maaf","terima kasih","selamat tinggal","tolong","sama-sama"],answer:1,img:"images/card-thanks.png"},
+  {id:7,hanzi:"现在",pinyin:"xiànzài",indo:"sekarang",choices:["kemarin","sekarang","besok","minggu","bulan"],answer:1,img:"images/card-now.png"},
+  {id:8,hanzi:"下雨",pinyin:"xiàyǔ",indo:"hujan",choices:["cerah","berangin","hujan","salju","mendung"],answer:2,img:"images/card-rain.png"}
+];
+
+let index = 0, score = 0, correct = 0, wrong = 0;
+const total = 100; // tampilkan 100 di UI; pastikan data berjumlah 100 di versi final
+
+// UI refs
+const qIndex = document.getElementById('qIndex');
+const questionText = document.getElementById('questionText');
+const questionPinyin = document.getElementById('questionPinyin');
+const questionIndo = document.getElementById('questionIndo');
+const choicesEl = document.getElementById('choices');
+const vocabHanzi = document.getElementById('vocabHanzi');
+const vocabPinyin = document.getElementById('vocabPinyin');
+const vocabIndo = document.getElementById('vocabIndo');
+const vocabImg = document.getElementById('vocabImg');
+const progressBar = document.getElementById('progressBar');
+const scoreEl = document.getElementById('score');
+const correctCount = document.getElementById('correctCount');
+const wrongCount = document.getElementById('wrongCount');
+const nextBtn = document.getElementById('nextBtn');
+const skipBtn = document.getElementById('skipBtn');
+const finalSummary = document.getElementById('finalSummary');
+const finalText = document.getElementById('finalText');
+const mistakes = document.getElementById('mistakes');
+const retryBtn = document.getElementById('retryBtn');
+const reviewBtn = document.getElementById('reviewBtn');
+
+let userAnswers = []; // simpan jawaban untuk review
+
+function loadQuestion(i){
+  // jika i melebihi data, tampilkan akhir
+  if(i >= questions.length){
+    showFinal();
+    return;
+  }
+  const q = questions[i];
+  qIndex.textContent = `Soal ${i+1}`;
+  questionText.textContent = q.hanzi;
+  questionPinyin.textContent = q.pinyin;
+  questionIndo.textContent = q.indo;
+  vocabHanzi.textContent = q.hanzi;
+  vocabPinyin.textContent = q.pinyin;
+  vocabIndo.textContent = q.indo;
+  vocabImg.src = q.img || 'images/card-placeholder.png';
+
+  // render choices
+  choicesEl.innerHTML = '';
+  q.choices.forEach((c, idx) => {
+    const btn = document.createElement('div');
+    btn.className = 'choice';
+    btn.dataset.idx = idx;
+    btn.innerHTML = `<strong>${String.fromCharCode(65+idx)}</strong> &nbsp; ${c}`;
+    btn.addEventListener('click', () => selectChoice(btn, q, idx));
+    choicesEl.appendChild(btn);
+  });
+
+  // reset controls
+  nextBtn.disabled = true;
+  progressBar.style.width = `${Math.round(((i)/total)*100)}%`;
+}
+
+function selectChoice(el, q, idx){
+  // jika sudah dipilih, abaikan
+  if(nextBtn.disabled === false && el.classList.contains('selected')) return;
+  // tandai pilihan
+  Array.from(choicesEl.children).forEach(c => c.classList.remove('selected','correct','wrong'));
+  el.classList.add('selected');
+
+  // cek jawaban
+  const isCorrect = idx === q.answer;
+  if(isCorrect){
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    // tandai jawaban benar juga
+    const correctEl = Array.from(choicesEl.children).find(c => Number(c.dataset.idx) === q.answer);
+    if(correctEl) correctEl.classList.add('correct');
+  }
+
+  // simpan jawaban
+  userAnswers[index] = {qId:q.id, chosen:idx, correct:q.answer, q};
+  // update skor sementara (skor final dihitung saat next)
+  nextBtn.disabled = false;
+}
+
+nextBtn.addEventListener('click', () => {
+  const ua = userAnswers[index];
+  if(ua){
+    if(ua.chosen === ua.correct){ score++; correct++; }
+    else { wrong++; }
+  } else {
+    // jika tidak memilih (mis. langsung next), hitung sebagai salah
+    wrong++;
+    userAnswers[index] = {qId:questions[index].id, chosen:null, correct:questions[index].answer, q:questions[index]};
+  }
+  index++;
+  scoreEl.textContent = score;
+  correctCount.textContent = correct;
+  wrongCount.textContent = wrong;
+  if(index >= questions.length){
+    showFinal();
+  } else {
+    loadQuestion(index);
+  }
+});
+
+skipBtn.addEventListener('click', () => {
+  // tandai sebagai dilewati (salah)
+  userAnswers[index] = {qId:questions[index].id, chosen:null, correct:questions[index].answer, q:questions[index]};
+  wrong++;
+  index++;
+  scoreEl.textContent = score;
+  correctCount.textContent = correct;
+  wrongCount.textContent = wrong;
+  if(index >= questions.length){
+    showFinal();
+  } else {
+    loadQuestion(index);
+  }
+});
+
+function showFinal(){
+  progressBar.style.width = '100%';
+  finalSummary.classList.add('show');
+  finalText.innerHTML = `Skor Anda <strong>${score}</strong> dari <strong>${questions.length}</strong> (versi demo).<br>
+    Rekomendasi: <em>${score >= 85 ? 'Siap HSK1' : score >= 70 ? 'Perkuat kosakata' : 'Latihan ulang dasar'}</em>.`;
+  // tampilkan kesalahan singkat
+  mistakes.innerHTML = '';
+  userAnswers.forEach((ua, i) => {
+    if(!ua) return;
+    if(ua.chosen !== ua.correct){
+      const el = document.createElement('div');
+      el.style.padding='8px';
+      el.style.borderBottom='1px dashed #eef2ff';
+      el.innerHTML = `<strong>Soal ${i+1}:</strong> ${ua.q.hanzi} — jawaban benar: <em>${ua.q.choices[ua.correct]}</em>; pilihan Anda: <em>${ua.chosen===null?'(tidak memilih)':ua.q.choices[ua.chosen]}</em>`;
+      mistakes.appendChild(el);
+    }
+  });
+}
+
+retryBtn.addEventListener('click', () => {
+  // reset
+  index=0;score=0;correct=0;wrong=0;userAnswers=[];
+  finalSummary.classList.remove('show');
+  scoreEl.textContent='0';correctCount.textContent='0';wrongCount.textContent='0';
+  loadQuestion(0);
+});
+
+reviewBtn.addEventListener('click', () => {
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+});
+
+// inisialisasi
+loadQuestion(0);
+</script>
+</body>
+</html>
 
