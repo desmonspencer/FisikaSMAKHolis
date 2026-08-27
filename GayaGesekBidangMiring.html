@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Bidang Miring - Vektor Gaya Lengkap</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #1e293b;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            max-width: 1220px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .canvas-container {
+            flex: 3;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        canvas {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #f1f5f9;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+            font-weight: 600;
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .color-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .dashboard {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            display: flex;
+            justify-content: space-between;
+        }
+        .dashboard div { flex: 1; }
+        .highlight-answer {
+            color: #fbbf24;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .controls {
+            flex: 0 0 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            background: #f8fafc;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .control-group.stacked {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+        .control-group label {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        input[type="range"], select { 
+            width: 100%; 
+            cursor: pointer; 
+            margin: 2px 0;
+        }
+        select {
+            padding: 5px 8px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            background-color: white;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        .checkbox-group {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #166534;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        button {
+            flex: 1;
+            padding: 10px 5px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 12px;
+        }
+        .btn-play { background-color: #2563eb; color: white; }
+        .btn-play:hover { background-color: #1d4ed8; }
+        .btn-reset { background-color: #ef4444; color: white; }
+        .btn-reset:hover { background-color: #dc2626; }
+        
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #10b981;
+            text-align: center;
+            background: #0f172a;
+            padding: 8px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Simulasi Bidang Miring & Diagram Vektor Gaya Lengkap</h2>
+
+    <div class="container">
+        <div class="canvas-container">
+            <div class="legend">
+                <div class="legend-item"><div class="color-box" style="background:#8b5cf6;"></div> 🟣 W (Gaya Berat)</div>
+                <div class="legend-item"><div class="color-box" style="background:#10b981;"></div> 🟢 Wx (Komponen Sejajar)</div>
+                <div class="legend-item"><div class="color-box" style="background:#3b82f6;"></div> 🔵 Wy (Komponen Tegak Lurus)</div>
+                <div class="legend-item"><div class="color-box" style="background:#06b6d4;"></div> 🩵 N (Gaya Normal)</div>
+                <div class="legend-item"><div class="color-box" style="background:#ef4444;"></div> 🔴 f (Gaya Gesek)</div>
+            </div>
+
+            <canvas id="simCanvas" width="850" height="500"></canvas>
+            
+            <div class="dashboard" id="infoPanel"></div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="gravityVal">Gravitasi (g):</label>
+                <select id="gravityVal">
+                    <option value="9.8" selected>9.8 m/s² (Presisi)</option>
+                    <option value="10">10.0 m/s² (Pembulatan)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Massa Balok 1 (m₁): <span id="valMass1">10 kg</span></label>
+                <input type="range" id="mass1" min="0.01" max="5" value="0.01" step="0.01">
+            </div>
+
+            <div class="control-group stacked">
+                <label>Beban Tumpuk (m₂): <span id="valMass2">5 kg</span></label>
+                <input type="range" id="mass2" min="0" max="5" value="5" step="0.1">
+            </div>
+            
+            <div class="control-group">
+                <label>Sudut Kemiringan (θ): <span id="valAngle">30°</span></label>
+                <input type="range" id="angle" min="0" max="75" value="30" step="1">
+            </div>
+
+            <div class="control-group">
+                <label>Koefisien Gesek Statis (μs): <span id="valMus">0.50</span></label>
+                <input type="range" id="mus" min="0" max="1" value="0.5" step="0.01">
+            </div>
+
+            <div class="control-group">
+                <label>Koefisien Gesek Kinetis (μk): <span id="valMuk">0.30</span></label>
+                <input type="range" id="muk" min="0" max="1" value="0.3" step="0.01">
+            </div>
+
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="showForces" checked> 🎯 Tampilkan Vektor Gaya</label>
+                <label><input type="checkbox" id="showComponents" checked> 📐 Tampilkan Komponen Wx & Wy</label>
+                <label><input type="checkbox" id="slowMo"> ⏱️ Mode Slow Motion</label>
+            </div>
+
+            <div class="timer">⏱️ Waktu: <span id="timeDisplay">0.00</span> s</div>
+
+            <div class="buttons">
+                <button class="btn-play" id="btnPlay">▶ MULAI</button>
+                <button class="btn-reset" id="btnReset">🔄 RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const gravitySelect = document.getElementById('gravityVal');
+        const mass1Slider = document.getElementById('mass1');
+        const mass2Slider = document.getElementById('mass2');
+        const angleSlider = document.getElementById('angle');
+        const musSlider = document.getElementById('mus');
+        const mukSlider = document.getElementById('muk');
+        
+        const showForcesCheck = document.getElementById('showForces');
+        const showComponentsCheck = document.getElementById('showComponents');
+        const slowMoCheck = document.getElementById('slowMo');
+        
+        const valMass1 = document.getElementById('valMass1');
+        const valMass2 = document.getElementById('valMass2');
+        const valAngle = document.getElementById('valAngle');
+        const valMus = document.getElementById('valMus');
+        const valMuk = document.getElementById('valMuk');
+        const infoPanel = document.getElementById('infoPanel');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const btnPlay = document.getElementById('btnPlay');
+
+        let isPlaying = false;
+        let distance = 0; 
+        let velocity = 0;
+        let timeElapsed = 0;
+        let lastTime = performance.now();
+        
+        const PIXELS_PER_METER = 35; 
+        const MAX_DISTANCE = 18; 
+
+        musSlider.addEventListener('input', () => {
+            if(parseFloat(mukSlider.value) > parseFloat(musSlider.value)) {
+                mukSlider.value = musSlider.value;
+            }
+            updateUI();
+        });
+        mukSlider.addEventListener('input', () => {
+            if(parseFloat(mukSlider.value) > parseFloat(musSlider.value)) {
+                musSlider.value = musSlider.value;
+            }
+            updateUI();
+        });
+
+        [gravitySelect, mass1Slider, mass2Slider, angleSlider, showForcesCheck, showComponentsCheck].forEach(el => el.addEventListener('change', updateUI));
+        [mass1Slider, mass2Slider, angleSlider].forEach(el => el.addEventListener('input', updateUI));
+
+        function updateUI() {
+            valMass1.innerText = mass1Slider.value + " kg";
+            valMass2.innerText = mass2Slider.value + " kg";
+            valAngle.innerText = angleSlider.value + "°";
+            valMus.innerText = parseFloat(musSlider.value).toFixed(2);
+            valMuk.innerText = parseFloat(mukSlider.value).toFixed(2);
+            
+            if(!isPlaying && timeElapsed === 0) {
+                distance = 0;
+                velocity = 0;
+                timeElapsed = 0;
+                draw(); 
+            }
+        }
+
+        document.getElementById('btnPlay').addEventListener('click', () => {
+            if (distance >= MAX_DISTANCE) return;
+            isPlaying = !isPlaying;
+            btnPlay.innerText = isPlaying ? "PAUSE" : "▶ LANJUTKAN";
+            if(isPlaying) {
+                lastTime = performance.now();
+                requestAnimationFrame(loop);
+            }
+        });
+
+        document.getElementById('btnReset').addEventListener('click', () => {
+            isPlaying = false;
+            btnPlay.innerText = "▶ MULAI";
+            distance = 0;
+            velocity = 0;
+            timeElapsed = 0;
+            timeDisplay.innerText = "0.00";
+            updateUI();
+            draw();
+        });
+
+        function drawArrow(x, y, length, angle, color, label, lineWidth = 3) {
+            if(length < 1) return;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle);
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(length, 0);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+
+            const headLen = 10;
+            ctx.beginPath();
+            ctx.moveTo(length, 0);
+            ctx.lineTo(length - headLen, -5);
+            ctx.lineTo(length - headLen, 5);
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = color;
+            ctx.font = "bold 13px sans-serif";
+            
+            if (angle === Math.PI/2) {
+                ctx.fillText(label, length + 5, 12);
+            } else if (angle === -Math.PI/2) {
+                ctx.fillText(label, length + 5, -5);
+            } else if (angle === Math.PI) {
+                ctx.fillText(label, length + 10, 4);
+            } else {
+                ctx.fillText(label, length + 8, 4);
+            }
+            ctx.restore();
+        }
+
+        function draw() {
+            const GRAVITY = parseFloat(gravitySelect.value);
+            const m1 = parseFloat(mass1Slider.value);
+            const m2 = parseFloat(mass2Slider.value);
+            const mTotal = m1 + m2; 
+            const thetaDeg = parseFloat(angleSlider.value);
+            const theta = thetaDeg * Math.PI / 180;
+            const mus = parseFloat(musSlider.value);
+            const muk = parseFloat(mukSlider.value);
+
+            // Perhitungan Gaya
+            const W = mTotal * GRAVITY;
+            const Wx = W * Math.sin(theta);
+            const Wy = W * Math.cos(theta);
+            const N = Wy;
+            
+            // Perhitungan Gaya Gesek Statis Max dan Gesek Kinetis
+            const fs_max = mus * N;
+            const fk = muk * N;
+            
+            let currentFriction = 0;
+            let acceleration = 0;
+            let frictionType = "";
+
+            if (Wx > fs_max) {
+                acceleration = (Wx - fk) / mTotal;
+                currentFriction = fk;
+                frictionType = "Kinetis (fk)";
+            } else {
+                acceleration = 0;
+                currentFriction = Wx;
+                frictionType = "Statis (fs)";
+                velocity = 0; 
+            }
+
+            if (distance >= MAX_DISTANCE) {
+                distance = MAX_DISTANCE;
+                velocity = 0;
+                acceleration = 0;
+                if(isPlaying) {
+                    isPlaying = false;
+                    btnPlay.innerText = "Selesai (Reset)";
+                }
+            }
+
+            // Update Dashboard Informasi (Menggunakan format 3 desimal untuk fs_max, fk, dan f)
+            infoPanel.innerHTML = `
+                <div>
+                    <u>DATA SISTEM & GAYA:</u><br>
+                    Gravitasi (g) = ${GRAVITY} m/s²<br>
+                    Total Massa (m) = ${mTotal} kg<br>
+                    Gaya Berat (W) = ${W.toFixed(3)} N<br>
+                    Gaya Normal (N) = ${N.toFixed(3)} N<br>
+                    fs max (μs × N) = <span class="highlight-answer">${fs_max.toFixed(3)} N</span><br>
+                    fk (μk × N) = <span class="highlight-answer">${fk.toFixed(3)} N</span>
+                </div>
+                <div style="border-left: 2px solid #334155; padding-left: 15px;">
+                    <u>KOMPONEN & JAWABAN:</u><br>
+                    Wx = ${Wx.toFixed(3)} N | Wy = ${Wy.toFixed(3)} N<br>
+                    Gaya Gesek Aktif: <span class="highlight-answer">f = ${currentFriction.toFixed(3)} N</span> (${frictionType})<br>
+                    Percepatan: <span class="highlight-answer">a = ${acceleration.toFixed(3)} m/s²</span><br>
+                    Jarak Tempuh: <span class="highlight-answer">s = ${distance.toFixed(2)} Meter</span>
+                </div>
+            `;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const pivotX = 40;
+            const pivotY = 50;
+            ctx.save();
+            ctx.translate(pivotX, pivotY);
+
+            const groundLength = 780;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(groundLength * Math.cos(theta), groundLength * Math.sin(theta));
+            ctx.lineTo(groundLength * Math.cos(theta), groundLength * Math.sin(theta) + 500); 
+            ctx.lineTo(0, groundLength * Math.sin(theta) + 500); 
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(groundLength * Math.cos(theta), groundLength * Math.sin(theta));
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            ctx.rotate(theta);
+
+            const blockWidth = 70;
+            const b1Height = 45;
+            const b2Height = m2 > 0 ? 35 : 0;
+            
+            const blockX = distance * PIXELS_PER_METER;
+            const b1Y = -b1Height; 
+            const b2Y = b1Y - b2Height; 
+
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(blockX, b1Y, blockWidth, b1Height);
+            ctx.strokeStyle = '#1e3a8a';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(blockX, b1Y, blockWidth, b1Height);
+            ctx.fillStyle = 'white';
+            ctx.font = "bold 12px sans-serif";
+            ctx.fillText(`m₁: ${m1}kg`, blockX + 8, b1Y + 28);
+
+            if(m2 > 0) {
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(blockX, b2Y, blockWidth, b2Height);
+                ctx.strokeStyle = '#b45309';
+                ctx.strokeRect(blockX, b2Y, blockWidth, b2Height);
+                ctx.fillStyle = 'black';
+                ctx.fillText(`m₂: ${m2}kg`, blockX + 8, b2Y + 22);
+            }
+
+            const totalHeight = b1Height + b2Height;
+            const centerX = blockX + blockWidth / 2;
+            const centerY = b1Y + b1Height - (totalHeight / 2); 
+            
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#f8fafc';
+            ctx.fill();
+            ctx.strokeStyle = '#0f172a';
+            ctx.stroke();
+
+            const forceScale = 0.55; 
+
+            if (showForcesCheck.checked) {
+                const nLen = Math.min(N * forceScale, 140);
+                drawArrow(centerX, centerY, nLen, -Math.PI/2, '#06b6d4', `N = ${N.toFixed(2)}N`, 3.5);
+
+                const fLen = Math.min(currentFriction * forceScale, 140);
+                drawArrow(centerX, centerY, fLen, Math.PI, '#ef4444', `f = ${currentFriction.toFixed(3)}N`, 3.5);
+
+                if (showComponentsCheck.checked) {
+                    const wxLen = Math.min(Wx * forceScale, 150);
+                    const wyLen = Math.min(Wy * forceScale, 150);
+
+                    ctx.save();
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeStyle = '#a855f7';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX + wxLen, centerY);
+                    ctx.lineTo(centerX + wxLen, centerY + wyLen);
+                    ctx.moveTo(centerX, centerY + wyLen);
+                    ctx.lineTo(centerX + wxLen, centerY + Wy * forceScale);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    drawArrow(centerX, centerY, wxLen, 0, '#10b981', `Wx = ${Wx.toFixed(2)}N`, 3);
+                    drawArrow(centerX, centerY, wyLen, Math.PI/2, '#3b82f6', `Wy = ${Wy.toFixed(2)}N`, 3);
+                }
+
+                const wLen = Math.min(W * forceScale, 160);
+                const wAngle = Math.PI/2 - theta;
+                drawArrow(centerX, centerY, wLen, wAngle, '#8b5cf6', `W = ${W.toFixed(2)}N`, 4);
+            }
+
+            ctx.restore();
+
+            return acceleration;
+        }
+
+        function loop(timestamp) {
+            let deltaTime = (timestamp - lastTime) / 1000;
+            lastTime = timestamp;
+            if (deltaTime > 0.1) deltaTime = 0.016; 
+
+            let displayDelta = deltaTime;
+            if (slowMoCheck.checked) {
+                deltaTime *= 0.2; 
+            }
+
+            let a = draw();
+
+            if (isPlaying && distance < MAX_DISTANCE) {
+                timeElapsed += displayDelta; 
+                timeDisplay.innerText = timeElapsed.toFixed(2);
+                velocity += a * deltaTime;
+                distance += velocity * deltaTime;
+                requestAnimationFrame(loop);
+            } else if (isPlaying && distance >= MAX_DISTANCE) {
+                draw();
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
