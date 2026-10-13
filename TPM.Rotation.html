@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulasi Titik Berat Bangun Datar</title>
+
+<!-- Menambahkan konfigurasi dan library MathJax untuk merender rumus kecil di daftar bawah -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root{
+    --bg:#f3f6fb; --surface:#ffffff; --surface-2:#eef2f8; --border:#d7deea;
+    --text:#13203a; --muted:#5a6a84; --accent:#0b6e8a; --accent-ink:#ffffff;
+    --canvas-bg:#fbfdff; --grid:#c9d5e6; --grid-minor:#e6edf6; --axis:#2b3b57; --danger:#d12f3a;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0a1220; --surface:#111b2e; --surface-2:#17233a; --border:#25324d;
+      --text:#e7edf8; --muted:#97a6c0; --accent:#38c6e6; --accent-ink:#06222b;
+      --canvas-bg:#0c1627; --grid:#2c3b5a; --grid-minor:#16233b; --axis:#cfd8e8; --danger:#ff7b84;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a1220; --surface:#111b2e; --surface-2:#17233a; --border:#25324d;
+    --text:#e7edf8; --muted:#97a6c0; --accent:#38c6e6; --accent-ink:#06222b;
+    --canvas-bg:#0c1627; --grid:#2c3b5a; --grid-minor:#16233b; --axis:#cfd8e8; --danger:#ff7b84;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:15px;line-height:1.45}
+  header{padding:18px 20px 4px;max-width:1400px;margin:0 auto}
+  h1{font-size:22px;margin:0 0 2px;letter-spacing:-.01em}
+  h2{font-size:15px;margin:0 0 10px}
+  .muted{color:var(--muted)}
+  .small{font-size:12.5px}
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;padding:14px 20px 28px;max-width:1400px;margin:0 auto;align-items:start}
+  .col{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:10px}
+  .toolbar .group{display:flex;gap:6px;align-items:center}
+  .check{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;cursor:pointer}
+  .check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+  canvas{display:block;width:100%;height:540px;border-radius:8px;border:1px solid var(--border);background:var(--canvas-bg);touch-action:none;cursor:grab}
+  .statusbar{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  button{font:inherit;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+  .btn-danger{color:var(--danger)}
+  .add-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+  .add-grid button{display:flex;gap:8px;align-items:center;text-align:left;padding:7px 9px}
+  .add-grid svg{width:22px;height:22px;flex:none;stroke:var(--accent);fill:var(--accent);fill-opacity:.18;stroke-width:1.6}
+  .shape-item{display:flex;gap:10px;align-items:center;padding:7px 8px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+  .shape-item:hover{background:var(--surface-2)}
+  .shape-item.active{border-color:var(--accent);background:var(--surface-2)}
+  .swatch{width:12px;height:12px;border-radius:3px;flex:none}
+  .grow{flex:1;min-width:0}
+  .tag{font-style:normal;font-size:11.5px;color:var(--danger);border:1px solid var(--danger);border-radius:6px;padding:0 5px;margin-left:4px}
+  .icon-btn{padding:0 8px;font-size:18px;line-height:26px;color:var(--muted)}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+  .field{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--muted)}
+  .field.span2{grid-column:1 / -1}
+  .field input, .field select{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 8px;width:100%}
+  .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .divider{border:0;border-top:1px solid var(--border);margin:12px 0}
+  .table-wrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.5px;font-variant-numeric:tabular-nums}
+  th,td{padding:6px 9px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  th:nth-child(1),td:nth-child(1),th:nth-child(2),td:nth-child(2){text-align:left}
+  th{color:var(--muted);font-weight:600;font-size:12.5px}
+  tr.hole td{color:var(--danger)}
+  tfoot td{font-weight:700;border-bottom:0}
+  .result{margin-top:12px;display:grid;gap:6px;padding:12px;border-radius:8px;background:var(--surface-2);font-variant-numeric:tabular-nums}
+  .result b{color:var(--accent)}
+  .warn{color:var(--danger)}
+  details summary{cursor:pointer;font-weight:600}
+  details p{margin:12px 0 0}
+  @media (max-width:980px){
+    .layout{grid-template-columns:1fr;padding:12px}
+    canvas{height:420px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Praktikum Fisika kelas 11 SMA BPK PENABUR HOLIS - Simulasi Titik Berat Bangun Datar</h1>
+  <div class="muted">Susun beberapa bangun datar pada bidang koordinat x–y, atur ukurannya, rotasikan, lalu analisis titik beratnya.</div>
+</header>
+
+<div class="layout">
+  <div class="col">
+    <section class="panel">
+      <div class="toolbar">
+        <div class="group">
+          <button id="zoom-out" title="Perkecil" aria-label="Perkecil">−</button>
+          <button id="zoom-in" title="Perbesar" aria-label="Perbesar">+</button>
+          <button id="fit">Pas ke layar</button>
+        </div>
+        <label class="check"><input type="checkbox" id="t-grid" checked> Kisi</label>
+        <label class="check"><input type="checkbox" id="t-cent" checked> Titik berat tiap bangun</label>
+        <label class="check"><input type="checkbox" id="t-snap" checked> Tempel ke kisi saat digeser</label>
+      </div>
+      <canvas id="stage" aria-label="Diagram koordinat x-y dengan bangun datar dan titik beratnya"></canvas>
+      <div class="statusbar">
+        <span id="cursor">Kursor: x = –; y = –</span>
+        <span>Klik 2x bangun: ubah lubang • Seret latar: geser tampilan • Tarik tuas bangun: rotasi/skala</span>
+      </div>
+    </section>
+
+    <!-- Bagian Perhitungan Terproteksi Password -->
+    <section class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+        <h2 style="margin:0">Perhitungan titik berat gabungan</h2>
+      </div>
+      
+      <!-- Input Password (Tampil Pertama) -->
+      <div id="password-box" style="display:flex; flex-direction:column; gap:8px; padding:10px 0;">
+        <p class="small muted" style="margin:0">Masukkan password untuk membuka tabel perhitungan dan hasil koordinat titik berat ($x_p, y_p$):</p>
+        <div style="display:flex; gap:8px;">
+          <input type="password" id="calc-password" placeholder="Ketik password di sini..." style="font:inherit; color:var(--text); background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:6px 8px; flex:1;">
+          <button id="btn-unlock" class="btn-primary">Buka Kunci</button>
+        </div>
+        <span id="password-error" class="warn small" style="display:none;">⚠️ Password salah! Silakan coba lagi.</span>
+      </div>
+
+      <!-- Kontainer Perhitungan (Disembunyikan sebelum password benar) -->
+      <div id="calc-container" style="display: none;">
+        <div class="table-wrap"><table id="calc"></table></div>
+        <div class="result" id="result"></div>
+        <div class="row" style="margin-top:10px;">
+          <button id="btn-lock" class="btn-danger" style="font-size:12px; padding:4px 8px;">Kunci Kembali</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="col">
+    <section class="panel">
+      <details>
+        <summary style="font-size:15px; color:var(--text);">+ Tambah Bangun Baru</summary>
+        <div style="margin-top:10px;">
+          <div class="add-grid" id="add-grid"></div>
+          <label class="check" style="margin-top:10px"><input type="checkbox" id="add-hole"> Tambahkan sebagai lubang (luasnya dikurangi)</label>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel">
+      <h2>Daftar bangun</h2>
+      <div id="shape-list"></div>
+      <div class="row">
+        <button id="clear-all" class="btn-danger">Hapus semua</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Ukuran dan posisi bangun terpilih</h2>
+      <div id="props"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Contoh susunan</h2>
+      <div class="row" style="margin-top:0">
+        <button data-preset="rumah">Rumah</button>
+        <button data-preset="L">Huruf L</button>
+        <button data-preset="T">Huruf T</button>
+        <button data-preset="lubang">Persegi berlubang</button>
+        <button data-preset="jendela">Jendela lengkung</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <details>
+        <summary>Rumus yang dipakai</summary>
+        <p class="small" style="margin-bottom: 8px;"><b>Titik berat gabungan (berdasarkan luas):</b></p>
+        <img src="Screen Shot 2026-10-13 at 11.57.10_2.png" alt="Rumus Titik Berat Gabungan" style="width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--border); background: #fff; margin-bottom: 12px;">
+        
+        <p class="small" style="margin-bottom: 8px;"><b>Titik pusat massa (berdasarkan massa):</b></p>
+        <img src="Screen Shot 2026-10-13 at 11.56.54_2.png" alt="Rumus Pusat Massa" style="width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--border); background: #fff;">
+        
+        <p class="small" style="margin-top: 12px;">Bangun lubang dihitung sebagai luas/massa negatif.</p>
+        <hr class="divider">
+        <p class="small">Titik berat satu bangun (dari pojok kiri bawah kotak pembatas):</p>
+        <ul class="small" style="padding-left: 20px; margin-top: 5px;">
+          <li><b>Persegi panjang:</b> ($p/2$ ; $l/2$)</li>
+          <li><b>Segitiga:</b> $t/3$ dari alas</li>
+          <li><b>Trapesium:</b> $y = \frac{t(a+2b)}{3(a+b)}$ dari sisi bawah ($a$)</li>
+          <li><b>Setengah lingkaran:</b> $\frac{4r}{3\pi}$ dari garis diameter</li>
+          <li><b>Seperempat lingkaran:</b> $\frac{4r}{3\pi}$ dari kedua sisi lurus</li>
+        </ul>
+      </details>
+    </section>
+  </aside>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const PI = Math.PI;
+const fmt = (n, d = 2) => {
+  if (!isFinite(n)) return '–';
+  const v = Math.abs(n) < 5e-10 ? 0 : n;
+  return v.toLocaleString('id-ID', { maximumFractionDigits: d });
+};
+const SUB = '₀₁₂₃₄₅₆₇₈₉';
+const sub = n => String(n).replace(/\d/g, d => SUB[d]);
+const COLORS = ['#2f7de1', '#12a37f', '#e59a0f', '#8b5cf6', '#e0529c', '#0fa3b1', '#e8692a', '#5b6cf0'];
+
+/* ---------- Logika Status Password & Kunci TPM ---------- */
+const CORRECT_PASSWORD = "fisika123"; // Ubah password ini sesuai kebutuhan Anda
+let isUnlocked = false; // Status apakah password sudah dimasukkan dengan benar
+
+const passwordInput = $('calc-password');
+const unlockBtn = $('btn-unlock');
+const lockBtn = $('btn-lock');
+const passwordBox = $('password-box');
+const calcContainer = $('calc-container');
+const passwordError = $('password-error');
+
+function handleUnlock() {
+  if (passwordInput.value === CORRECT_PASSWORD) {
+    isUnlocked = true;
+    passwordBox.style.display = 'none';
+    calcContainer.style.display = 'block';
+    passwordError.style.display = 'none';
+    passwordInput.value = '';
+    schedule(); // Muat ulang gambar agar TPM muncul
+  } else {
+    passwordError.style.display = 'block';
+    passwordInput.focus();
+  }
+}
+
+if (unlockBtn) unlockBtn.onclick = handleUnlock;
+if (passwordInput) {
+  passwordInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleUnlock();
+  });
+}
+if (lockBtn) {
+  lockBtn.onclick = () => {
+    isUnlocked = false;
+    calcContainer.style.display = 'none';
+    passwordBox.style.display = 'flex';
+    schedule(); // Muat ulang gambar agar TPM disembunyikan kembali
+  };
+}
+
+/* ---------- Definisi jenis bangun ---------- */
+const TYPES = {
+  rect:      { name: 'Persegi panjang', icon: '<rect x="2.5" y="7" width="19" height="10"/>',
+               def: () => ({ w: 8, h: 4 }),
+               fields: [{ key: 'w', label: 'Panjang' }, { key: 'h', label: 'Lebar / tinggi' }] },
+  square:    { name: 'Persegi', icon: '<rect x="5" y="5" width="14" height="14"/>',
+               def: () => ({ s: 5 }),
+               fields: [{ key: 's', label: 'Sisi' }] },
+  triangle:  { name: 'Segitiga', icon: '<path d="M3 19 L21 19 L12 5 Z"/>',
+               def: () => ({ kind: 'iso', a: 8, t: 6, q: 4 }),
+               fields: [
+                 { key: 'kind', label: 'Jenis segitiga', kind: 'select',
+                   options: [['iso', 'Sama kaki'], ['right', 'Siku-siku'], ['free', 'Sembarang (atur posisi puncak)']] },
+                 { key: 'a', label: 'Alas' }, { key: 't', label: 'Tinggi' },
+                 { key: 'q', label: 'Posisi puncak dari kiri', show: p => p.kind === 'free' }] },
+  trapezoid: { name: 'Trapesium', icon: '<path d="M2 19 L22 19 L17 6 L7 6 Z"/>',
+               def: () => ({ a: 10, b: 5, t: 4 }),
+               fields: [{ key: 'a', label: 'Sisi bawah (a)' }, { key: 'b', label: 'Sisi atas (b)' }, { key: 't', label: 'Tinggi' }] },
+  circle:    { name: 'Lingkaran', icon: '<circle cx="12" cy="12" r="8.5"/>',
+               def: () => ({ r: 3 }), fields: [{ key: 'r', label: 'Jari-jari' }] },
+  semicircle:{ name: 'Setengah lingkaran', icon: '<path d="M2.5 17 A9.5 9.5 0 0 1 21.5 17 Z"/>',
+               def: () => ({ r: 3 }), fields: [{ key: 'r', label: 'Jari-jari' }] },
+  quarter:   { name: 'Seperempat lingkaran', icon: '<path d="M5 19 L5 5 A14 14 0 0 1 19 19 Z"/>',
+               def: () => ({ r: 4 }), fields: [{ key: 'r', label: 'Jari-jari' }] }
+};
+
+function arc(cx, cy, r, a0, a1, n = 72) {
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const a = a0 + (a1 - a0) * i / n;
+    pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+  }
+  return pts;
+}
+
+function geom(s) {
+  const p = s.p; let w, h, pts, A, c;
+  switch (s.type) {
+    case 'rect':   w = p.w; h = p.h; pts = [[0,0],[w,0],[w,h],[0,h]]; A = w*h; c = [w/2, h/2]; break;
+    case 'square': w = h = p.s; pts = [[0,0],[w,0],[w,h],[0,h]]; A = w*h; c = [w/2, h/2]; break;
+    case 'triangle': {
+      w = p.a; h = p.t;
+      const q = p.kind === 'iso' ? w/2 : p.kind === 'right' ? 0 : Math.min(Math.max(p.q, 0), w);
+      pts = [[0,0],[w,0],[q,h]]; A = w*h/2; c = [(w+q)/3, h/3]; break; }
+    case 'trapezoid': {
+      const a = p.a, b = p.b; h = p.t; w = Math.max(a, b);
+      pts = [[(w-a)/2,0],[(w+a)/2,0],[(w+b)/2,h],[(w-b)/2,h]];
+      A = (a+b)/2*h; c = [w/2, h*(a+2*b)/(3*(a+b))]; break; }
+    case 'circle': { const r = p.r; w = h = 2*r; pts = arc(r, r, r, 0, 2*PI); A = PI*r*r; c = [r, r]; break; }
+    case 'semicircle': { const r = p.r; w = 2*r; h = r; pts = arc(r, 0, r, 0, PI); A = PI*r*r/2; c = [r, 4*r/(3*PI)]; break; }
+    case 'quarter': { const r = p.r; w = h = r; pts = [[0,0], ...arc(0, 0, r, 0, PI/2)]; A = PI*r*r/4; c = [4*r/(3*PI), 4*r/(3*PI)]; break; }
+  }
+  if (s.fx) { pts = pts.map(([x,y]) => [w-x, y]); c = [w-c[0], c[1]]; }
+  if (s.fy) { pts = pts.map(([x,y]) => [x, h-y]); c = [c[0], h-c[1]]; }
+  const ang = s.rot * PI / 180, co = Math.cos(ang), si = Math.sin(ang), hx = w/2, hy = h/2;
+  const tf = ([px, py]) => { const dx = px-hx, dy = py-hy; return { x: s.x + hx + dx*co - dy*si, y: s.y + hy + dx*si + dy*co }; };
+  return { w, h, A, pts: pts.map(tf), c: tf(c), tf };
+}
+
+function describe(s) {
+  const p = s.p;
+  switch (s.type) {
+    case 'rect': return `${fmt(p.w)} × ${fmt(p.h)}`;
+    case 'square': return `sisi ${fmt(p.s)}`;
+    case 'triangle': return `alas ${fmt(p.a)}, tinggi ${fmt(p.t)}`;
+    case 'trapezoid': return `a ${fmt(p.a)}, b ${fmt(p.b)}, t ${fmt(p.t)}`;
+    default: return `r = ${fmt(p.r)}`;
+  }
+}
+
+const canvas = $('stage'), ctx = canvas.getContext('2d');
+let W = 0, H = 0, dpr = 1;
+const view = { ox: 60, oy: 400, scale: 30, touched: false };
+let shapes = [], selectedId = null, nextId = 1, colorIdx = 0;
+const opts = { grid: true, cent: true, snap: true };
+let theme = {}, hatch = null, drag = null, queued = false;
+
+const sel = () => shapes.find(s => s.id === selectedId) || null;
+const sx = X => view.ox + X * view.scale;
+const sy = Y => view.oy - Y * view.scale;
+const wx = px => (px - view.ox) / view.scale;
+const wy = py => (view.oy - py) / view.scale;
+const snapv = v => opts.snap ? Math.round(v / 0.5) * 0.5 : Math.round(v * 100) / 100;
+
+function makeShape(type, o = {}) {
+  const s = { id: nextId++, type, p: Object.assign(TYPES[type].def(), o.p || {}), x: o.x ?? 0, y: o.y ?? 0,
+              rot: o.rot ?? 0, rho: o.rho ?? 1, hole: !!o.hole, fx: !!o.fx, fy: !!o.fy, color: COLORS[colorIdx++ % COLORS.length] };
+  shapes.push(s);
+  return s;
+}
+
+function compute() {
+  let sumW = 0, sumX = 0, sumY = 0;
+  const rows = shapes.map(s => {
+    const g = geom(s);
+    const m = (s.hole ? -1 : 1) * s.rho * g.A;
+    sumW += m; sumX += m * g.c.x; sumY += m * g.c.y;
+    return { s, g, m };
+  });
+  const ok = sumW > 1e-9;
+  return { rows, sumW, sumX, sumY, Z: ok ? { x: sumX / sumW, y: sumY / sumW } : null };
+}
+
+function inPoly(x, y, pts) {
+  let inside = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const a = pts[i], b = pts[j];
+    if ((a.y > y) !== (b.y > y) && x < (b.x - a.x) * (y - a.y) / (b.y - a.y) + a.x) inside = !inside;
+  }
+  return inside;
+}
+function hitTest(X, Y) {
+  for (let i = shapes.length - 1; i >= 0; i--) {
+    if (inPoly(X, Y, geom(shapes[i]).pts)) return shapes[i];
+  }
+  return null;
+}
+
+function readTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  const g = n => cs.getPropertyValue(n).trim();
+  theme = { canvas: g('--canvas-bg'), grid: g('--grid'), minor: g('--grid-minor'), axis: g('--axis'),
+            text: g('--text'), muted: g('--muted'), danger: g('--danger'), surface: g('--surface') };
+  const c = document.createElement('canvas'); c.width = c.height = 8;
+  const x = c.getContext('2d'); x.strokeStyle = theme.danger; x.lineWidth = 1.2; x.beginPath();
+  x.moveTo(-1, 9); x.lineTo(9, -1); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(7, 9); x.lineTo(9, 7); x.stroke();
+  hatch = ctx.createPattern(c, 'repeat');
+}
+
+function resize() {
+  const r = canvas.getBoundingClientRect();
+  dpr = window.devicePixelRatio || 1;
+  W = r.width; H = r.height;
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  if (!view.touched) fitView();
+  schedule();
+}
+
+function fitView() {
+  if (!W || !H) return;
+  let minX = 0, maxX = 10, minY = 0, maxY = 10;
+  if (shapes.length) {
+    minX = 0; maxX = 0; minY = 0; maxY = 0;
+    shapes.forEach(s => geom(s).pts.forEach(p => {
+      minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+      minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+    }));
+  }
+  const bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
+  const sc = Math.min((W - 110) / bw, (H - 110) / bh);
+  view.scale = Math.min(300, Math.max(4, sc));
+  view.ox = (W - bw * view.scale) / 2 - minX * view.scale;
+  view.oy = (H - bh * view.scale) / 2 + maxY * view.scale;
+}
+
+function niceStep(min) {
+  const e = Math.pow(10, Math.floor(Math.log10(min))), m = min / e;
+  return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e;
+}
+function label(t, x, y, color, align = 'left', font = '600 12px "Segoe UI",system-ui,sans-serif') {
+  ctx.font = font; ctx.textAlign = align; ctx.lineJoin = 'round';
+  ctx.lineWidth = 3.5; ctx.strokeStyle = theme.canvas; ctx.strokeText(t, x, y);
+  ctx.fillStyle = color; ctx.fillText(t, x, y);
+}
+function line(x1, y1, x2, y2) { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function poly(pts) {
+  ctx.beginPath();
+  pts.forEach((p, i) => i ? ctx.lineTo(sx(p.x), sy(p.y)) : ctx.moveTo(sx(p.x), sy(p.y)));
+  ctx.closePath();
+}
+
+function drawGrid() {
+  ctx.fillStyle = theme.canvas; ctx.fillRect(0, 0, W, H);
+  const x0 = wx(0), x1 = wx(W), yTop = wy(0), yBot = wy(H);
+  const step = niceStep(55 / view.scale), minor = step / 5;
+  ctx.lineWidth = 1;
+  if (opts.grid) {
+    if (minor * view.scale >= 9) {
+      ctx.strokeStyle = theme.minor;
+      for (let i = Math.ceil(x0 / minor); i * minor <= x1; i++) if (i % 5) line(sx(i * minor), 0, sx(i * minor), H);
+      for (let i = Math.ceil(yBot / minor); i * minor <= yTop; i++) if (i % 5) line(0, sy(i * minor), W, sy(i * minor));
+    }
+    ctx.strokeStyle = theme.grid;
+    for (let i = Math.ceil(x0 / step); i * step <= x1; i++) line(sx(i * step), 0, sx(i * step), H);
+    for (let i = Math.ceil(yBot / step); i * step <= yTop; i++) line(0, sy(i * step), W, sy(i * step));
+  }
+  const ax = sx(0), ay = sy(0);
+  ctx.strokeStyle = theme.axis; ctx.fillStyle = theme.axis; ctx.lineWidth = 1.6;
+  if (ay >= 0 && ay <= H) { line(0, ay, W - 4, ay); ctx.beginPath(); ctx.moveTo(W - 2, ay); ctx.lineTo(W - 12, ay - 4); ctx.lineTo(W - 12, ay + 4); ctx.fill(); }
+  if (ax >= 0 && ax <= W) { line(ax, H, ax, 4); ctx.beginPath(); ctx.moveTo(ax, 2); ctx.lineTo(ax - 4, 12); ctx.lineTo(ax + 4, 12); ctx.fill(); }
+  const labY = Math.min(Math.max(ay + 16, 16), H - 6);
+  const labX = Math.min(Math.max(ax - 7, 34), W - 6);
+  ctx.lineWidth = 1.2;
+  for (let i = Math.ceil(x0 / step); i * step <= x1; i++) {
+    if (i === 0) continue;
+    const px = sx(i * step);
+    if (ay >= 0 && ay <= H) line(px, ay - 3, px, ay + 3);
+    label(fmt(i * step, 3), px, labY, theme.muted, 'center', '12px "Segoe UI",system-ui,sans-serif');
+  }
+  for (let i = Math.ceil(yBot / step); i * step <= yTop; i++) {
+    if (i === 0) continue;
+    const py = sy(i * step);
+    if (ax >= 0 && ax <= W) line(ax - 3, py, ax + 3, py);
+    label(fmt(i * step, 3), labX, py + 4, theme.muted, 'right', '12px "Segoe UI",system-ui,sans-serif');
+  }
+  label('0', labX, labY, theme.muted, 'right', '12px "Segoe UI",system-ui,sans-serif');
+  if (ay >= 0 && ay <= H) label('x', W - 16, ay - 10, theme.axis, 'center', 'italic 600 14px Georgia,serif');
+  if (ax >= 0 && ax <= W) label('y', ax + 12, 18, theme.axis, 'center', 'italic 600 14px Georgia,serif');
+}
+
+function draw(C) {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawGrid();
+
+  C.rows.forEach(({ s, g }) => {
+    poly(g.pts);
+    if (s.hole) {
+      ctx.fillStyle = theme.canvas; ctx.fill();
+      ctx.fillStyle = hatch; ctx.fill();
+      ctx.setLineDash([6, 4]); ctx.strokeStyle = theme.danger; ctx.lineWidth = 1.8; ctx.stroke(); ctx.setLineDash([]);
+    } else {
+      ctx.globalAlpha = 0.5; ctx.fillStyle = s.color; ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.stroke();
+    }
+    
+    if (s.id === selectedId) {
+      poly(g.pts); ctx.setLineDash([7, 4]); ctx.strokeStyle = theme.text; ctx.lineWidth = 1.6; ctx.stroke(); ctx.setLineDash([]);
+      
+      const rotPt = g.tf([g.w / 2, g.h + 24 / view.scale]);
+      const topPt = g.tf([g.w / 2, g.h]);
+      const scalePt = g.tf([g.w, 0]);
+
+      const cx = sx(topPt.x), cy = sy(topPt.y);
+      const rx = sx(rotPt.x), ry = sy(rotPt.y);
+      
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(rx, ry);
+      ctx.strokeStyle = theme.text; ctx.lineWidth = 1.5; ctx.stroke();
+      
+      ctx.beginPath(); ctx.arc(rx, ry, 6, 0, 2 * PI);
+      ctx.fillStyle = theme.surface; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
+
+      const scx = sx(scalePt.x), scy = sy(scalePt.y);
+      ctx.fillStyle = theme.surface; ctx.fillRect(scx - 6, scy - 6, 12, 12);
+      ctx.lineWidth = 2; ctx.strokeRect(scx - 6, scy - 6, 12, 12);
+    }
+  });
+
+  // HANYA MUNCUL JIKA PASSWORD SUDAH DIBUKA (isUnlocked === true)
+  if (isUnlocked && C.Z) {
+    const zx = sx(C.Z.x), zy = sy(C.Z.y);
+    ctx.setLineDash([5, 4]); ctx.strokeStyle = theme.danger; ctx.lineWidth = 1.3;
+    line(zx, zy, zx, sy(0)); line(zx, zy, sx(0), zy);
+    ctx.setLineDash([]);
+    label(`x̄ = ${fmt(C.Z.x, 2)}`, zx, sy(0) + (C.Z.y >= 0 ? -8 : 18), theme.danger, 'center');
+    label(`ȳ = ${fmt(C.Z.y, 2)}`, sx(0) + 8, zy + (C.Z.x >= 0 ? -6 : 16), theme.danger, 'left');
+
+    ctx.strokeStyle = theme.danger; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.arc(zx, zy, 8, 0, 2 * PI); ctx.stroke();
+    line(zx - 14, zy, zx + 14, zy); line(zx, zy - 14, zx, zy + 14);
+    ctx.beginPath(); ctx.arc(zx, zy, 2.6, 0, 2 * PI); ctx.fillStyle = theme.danger; ctx.fill();
+    const txt = `Z (${fmt(C.Z.x, 2)} ; ${fmt(C.Z.y, 2)})`;
+    ctx.font = '700 13px "Segoe UI",system-ui,sans-serif';
+    const flip = zx + 24 + ctx.measureText(txt).width > W;
+    label(txt, flip ? zx - 14 : zx + 14, zy - 14, theme.danger, flip ? 'right' : 'left', '700 13px "Segoe UI",system-ui,sans-serif');
+  }
+
+  // HANYA MUNCUL JIKA PASSWORD SUDAH DIBUKA (isUnlocked === true)
+  if (isUnlocked && opts.cent) {
+    C.rows.forEach(({ s, g }, i) => {
+      const px = sx(g.c.x), py = sy(g.c.y), col = s.hole ? theme.danger : s.color;
+      ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 2 * PI);
+      ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 1.8; ctx.strokeStyle = theme.canvas; ctx.stroke();
+      label('Z' + sub(i + 1), px + 7, py - 6, col);
+    });
+  }
+}
+
+function renderTable(C) {
+  const useRho = shapes.some(s => s.rho !== 1);
+  const sym = useRho ? 'W' : 'A';
+  let h = `<thead><tr><th>No</th><th>Bangun</th>${useRho ? '<th>Luas A</th><th>ρ</th>' : ''}<th>${useRho ? 'Wᵢ = ±ρ·A' : 'Luas Aᵢ (lubang negatif)'}</th><th>xᵢ</th><th>yᵢ</th><th>${sym}ᵢ·xᵢ</th><th>${sym}ᵢ·yᵢ</th></tr></thead><tbody>`;
+  if (!C.rows.length) h += `<tr><td colspan="${useRho ? 9 : 7}" class="muted" style="text-align:left">Belum ada bangun.</td></tr>`;
+  C.rows.forEach(({ s, g, m }, i) => {
+    h += `<tr class="${s.hole ? 'hole' : ''}"><td>Z${sub(i + 1)}</td><td>${TYPES[s.type].name}${s.hole ? ' (lubang)' : ''}</td>` +
+         (useRho ? `<td>${fmt(g.A, 3)}</td><td>${fmt(s.rho, 3)}</td>` : '') +
+         `<td>${fmt(m, 3)}</td><td>${fmt(g.c.x, 3)}</td><td>${fmt(g.c.y, 3)}</td><td>${fmt(m * g.c.x, 3)}</td><td>${fmt(m * g.c.y, 3)}</td></tr>`;
+  });
+  h += `</tbody>`;
+  if (C.rows.length) {
+    h += `<tfoot><tr><td></td><td>Jumlah (Σ)</td>${useRho ? '<td></td><td></td>' : ''}<td>${fmt(C.sumW, 3)}</td><td></td><td></td><td>${fmt(C.sumX, 3)}</td><td>${fmt(C.sumY, 3)}</td></tr></tfoot>`;
+  }
+  $('calc').innerHTML = h;
+
+  const r = $('result');
+  if (!C.rows.length) r.innerHTML = '<span class="muted">Tambahkan bangun untuk melihat titik beratnya.</span>';
+  else if (!C.Z) r.innerHTML = '<span class="warn">Total luas (atau massa) tidak positif, jadi titik berat tidak dapat dihitung. Periksa ukuran lubang.</span>';
+  else r.innerHTML =
+    `<div>x̄ = Σ(${sym}ᵢ·xᵢ) / Σ${sym}ᵢ = ${fmt(C.sumX, 3)} / ${fmt(C.sumW, 3)} = <b>${fmt(C.Z.x, 3)}</b></div>` +
+    `<div>ȳ = Σ(${sym}ᵢ·yᵢ) / Σ${sym}ᵢ = ${fmt(C.sumY, 3)} / ${fmt(C.sumW, 3)} = <b>${fmt(C.Z.y, 3)}</b></div>`;
+}
+
+function renderList() {
+  const el = $('shape-list');
+  if (!shapes.length) { el.innerHTML = '<p class="muted small" style="margin:0">Belum ada bangun. Tambahkan dari menu di atas atau pilih contoh susunan.</p>'; return; }
+  el.innerHTML = shapes.map((s, i) =>
+    `<div class="shape-item ${s.id === selectedId ? 'active' : ''}" data-id="${s.id}">
+      <span class="swatch" style="background:${s.hole ? 'var(--danger)' : s.color}"></span>
+      <div class="grow"><b>Z${sub(i + 1)}</b> ${TYPES[s.type].name}${s.hole ? '<em class="tag">lubang</em>' : ''}
+        <div class="small muted">${describe(s)} • pojok (${fmt(s.x, 1)} ; ${fmt(s.y, 1)}) • rotasi ${s.rot}°</div></div>
+      <button class="icon-btn" data-del="${s.id}" title="Hapus bangun" aria-label="Hapus bangun">×</button>
+    </div>`).join('');
+}
+
+function buildForm() {
+  const box = $('props'), s = sel();
+  if (!s) { box.innerHTML = '<p class="muted small" style="margin:0">Klik sebuah bangun pada diagram atau daftar untuk mengubah ukurannya.</p>'; return; }
+  const T = TYPES[s.type];
+  let h = `<div class="small muted" style="margin-bottom:8px">${T.name} — ukuran dalam satuan kisi</div><div class="field-grid">`;
+  T.fields.forEach(f => {
+    if (f.show && !f.show(s.p)) return;
+    if (f.kind === 'select') {
+      h += `<label class="field span2"><span>${f.label}</span><select data-p="${f.key}">${f.options.map(o => `<option value="${o[0]}" ${s.p[f.key] === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></label>`;
+    } else {
+      h += `<label class="field"><span>${f.label}</span><input type="number" inputmode="decimal" data-p="${f.key}" step="0.5" min="0.1" value="${s.p[f.key]}"></label>`;
+    }
+  });
+  h += `<label class="field"><span>Posisi X (pojok kiri bawah)</span><input type="number" inputmode="decimal" data-k="x" step="0.5" value="${Math.round(s.x * 100) / 100}"></label>
+        <label class="field"><span>Posisi Y (pojok kiri bawah)</span><input type="number" inputmode="decimal" data-k="y" step="0.5" value="${Math.round(s.y * 100) / 100}"></label>
+        
+        <label class="field span2" style="background:var(--surface-2); padding:8px; border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center">
+            <span><b>Rotasi Bangun:</b></span>
+            <b id="rot-val" style="color:var(--accent)">${s.rot}°</b>
+          </div>
+          <input type="range" data-k="rot" min="0" max="360" step="1" value="${s.rot}" style="width:100%; margin-top:6px; accent-color:var(--accent);">
+          <div class="row" style="margin-top:6px">
+            <button data-rot-delta="-45" style="flex:1">↺ -45°</button>
+            <button data-rot-delta="45" style="flex:1">↻ +45°</button>
+            <button data-rot-delta="90" style="flex:1">↻ +90°</button>
+            <button data-rot-set="0" style="flex:1">Reset 0°</button>
+          </div>
+        </label>
+      </div>
+
+      <details style="margin-top:10px; font-size:13px; border:1px solid var(--border); border-radius:8px; padding:8px 10px;">
+        <summary style="color:var(--muted); font-weight:600;">Pengaturan Lanjutan (Cermin & Massa Jenis)</summary>
+        <div class="field-grid" style="margin-top:8px;">
+          <label class="field span2"><span>Atur angka rotasi manual (°)</span><input type="number" inputmode="decimal" data-k="rot" step="15" value="${s.rot}"></label>
+          <label class="field span2"><span>Massa jenis relatif ρ</span><input type="number" inputmode="decimal" data-k="rho" step="0.1" min="0.01" value="${s.rho}"></label>
+        </div>
+      </details>
+
+      <label class="check" style="margin-top:10px"><input type="checkbox" id="f-hole" ${s.hole ? 'checked' : ''}> Jadikan lubang</label>
+      <div class="row">
+        <button data-act="fx">Cermin kiri-kanan</button>
+        <button data-act="fy">Cermin atas-bawah</button>
+        <button data-act="dup">Gandakan</button>
+        <button data-act="del" class="btn-danger">Hapus</button>
+      </div>`;
+  box.innerHTML = h;
+}
+
+function syncPos() {
+  const s = sel(); if (!s) return;
+  document.querySelectorAll('#props [data-k="x"],#props [data-k="y"]').forEach(inp => {
+    if (document.activeElement !== inp) inp.value = Math.round(s[inp.dataset.k] * 100) / 100;
+  });
+  document.querySelectorAll('#props [data-p]').forEach(inp => {
+    if (document.activeElement !== inp) inp.value = s.p[inp.dataset.p];
+  });
+}
+
+function schedule() {
+  if (queued) return;
+  queued = true;
+  requestAnimationFrame(() => {
+    queued = false;
+    const C = compute();
+    draw(C); renderTable(C); renderList();
+  });
+}
+
+function select(id) { selectedId = id; buildForm(); schedule(); }
+
+function removeShape(id) {
+  shapes = shapes.filter(s => s.id !== id);
+  if (selectedId === id) selectedId = null;
+  buildForm(); schedule();
+}
+
+function addShape(type) {
+  const s = makeShape(type, { hole: $('add-hole').checked });
+  const g = geom(s);
+  const k = shapes.length % 5 * 0.5;
+  const cx = W ? wx(W / 2) : 6, cy = W ? wy(H / 2) : 5;
+  s.x = snapv(cx - g.w / 2 + k); s.y = snapv(cy - g.h / 2 - k);
+  select(s.id);
+}
+
+const PRESETS = {
+  rumah:   () => { makeShape('rect', { p: { w: 8, h: 5 }, x: 0, y: 0 }); makeShape('triangle', { p: { kind: 'iso', a: 8, t: 4 }, x: 0, y: 5 }); },
+  L:       () => { makeShape('rect', { p: { w: 3, h: 9 }, x: 0, y: 0 }); makeShape('rect', { p: { w: 6, h: 3 }, x: 3, y: 0 }); },
+  T:       () => { makeShape('rect', { p: { w: 10, h: 3 }, x: 0, y: 6 }); makeShape('rect', { p: { w: 3, h: 6 }, x: 3.5, y: 0 }); },
+  lubang:  () => { makeShape('rect', { p: { w: 10, h: 10 }, x: 0, y: 0 }); makeShape('circle', { p: { r: 2 }, x: 5, y: 5, hole: true }); },
+  jendela: () => { makeShape('rect', { p: { w: 6, h: 6 }, x: 0, y: 0 }); makeShape('semicircle', { p: { r: 3 }, x: 0, y: 6 }); }
+};
+function loadPreset(name) {
+  shapes = []; selectedId = null; colorIdx = 0;
+  PRESETS[name]();
+  view.touched = false; fitView(); buildForm(); schedule();
+}
+
+const pos = e => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+
+canvas.addEventListener('dblclick', e => {
+  const p = pos(e), X = wx(p.x), Y = wy(p.y), hit = hitTest(X, Y);
+  if (hit) {
+    hit.hole = !hit.hole;
+    if (selectedId === hit.id) {
+      const fHole = $('f-hole');
+      if (fHole) fHole.checked = hit.hole;
+    }
+    schedule();
+    buildForm();
+  }
+});
+
+canvas.addEventListener('pointerdown', e => {
+  const p = pos(e), X = wx(p.x), Y = wy(p.y);
+  let hitHandle = null;
+  let hitShape = hitTest(X, Y);
+
+  if (selectedId) {
+    const s = shapes.find(q => q.id === selectedId);
+    if (s) {
+      const g = geom(s);
+      const rotPt = g.tf([g.w / 2, g.h + 24 / view.scale]);
+      const scalePt = g.tf([g.w, 0]);
+
+      const dRot = Math.hypot(p.x - sx(rotPt.x), p.y - sy(rotPt.y));
+      const dScale = Math.hypot(p.x - sx(scalePt.x), p.y - sy(scalePt.y));
+
+      if (dRot <= 14) hitHandle = 'rotate';
+      else if (dScale <= 14) hitHandle = 'scale';
+    }
+  }
+
+  canvas.setPointerCapture(e.pointerId);
+
+  if (hitHandle === 'rotate') {
+    const s = shapes.find(q => q.id === selectedId);
+    const g = geom(s);
+    const cx = s.x + g.w / 2, cy = s.y + g.h / 2;
+    drag = { type: 'rotate', id: s.id, cx, cy, startAngle: Math.atan2(Y - cy, X - cx), startRot: s.rot };
+    canvas.style.cursor = 'grabbing';
+  } else if (hitHandle === 'scale') {
+    const s = shapes.find(q => q.id === selectedId);
+    const g = geom(s);
+    const cx = s.x + g.w / 2, cy = s.y + g.h / 2;
+    drag = { 
+      type: 'scale', id: s.id, cx, cy, 
+      startDist: Math.hypot(X - cx, Y - cy), 
+      startP: JSON.parse(JSON.stringify(s.p))
+    };
+    canvas.style.cursor = 'nwse-resize';
+  } else if (hitShape) {
+    if (selectedId !== hitShape.id) select(hitShape.id);
+    drag = { type: 'shape', id: hitShape.id, dx: X - hitShape.x, dy: Y - hitShape.y };
+    canvas.style.cursor = 'move';
+  } else {
+    select(null);
+    drag = { type: 'pan', px: p.x, py: p.y, ox: view.ox, oy: view.oy, moved: false };
+    canvas.style.cursor = 'grabbing';
+  }
+});
+
+canvas.addEventListener('pointermove', e => {
+  const p = pos(e), X = wx(p.x), Y = wy(p.y);
+  $('cursor').textContent = `Kursor: x = ${fmt(X, 2)} ; y = ${fmt(Y, 2)}`;
+  
+  if (!drag) { 
+    let cursor = 'grab';
+    if (selectedId) {
+      const s = shapes.find(q => q.id === selectedId);
+      if (s) {
+        const g = geom(s);
+        const rotPt = g.tf([g.w / 2, g.h + 24 / view.scale]);
+        const scalePt = g.tf([g.w, 0]);
+        if (Math.hypot(p.x - sx(rotPt.x), p.y - sy(rotPt.y)) <= 14) cursor = 'pointer';
+        else if (Math.hypot(p.x - sx(scalePt.x), p.y - sy(scalePt.y)) <= 14) cursor = 'nwse-resize';
+        else if (hitTest(X, Y)) cursor = 'move';
+      } else if (hitTest(X, Y)) cursor = 'move';
+    } else if (hitTest(X, Y)) {
+      cursor = 'move';
+    }
+    canvas.style.cursor = cursor;
+    return; 
+  }
+
+  if (drag.type === 'rotate') {
+    const s = shapes.find(q => q.id === drag.id);
+    const angle = Math.atan2(Y - drag.cy, X - drag.cx);
+    let diff = (angle - drag.startAngle) * 180 / PI;
+    s.rot = Math.round((drag.startRot + diff + 360) % 360);
+    
+    schedule();
+    const rotVal = $('rot-val'); if(rotVal) rotVal.textContent = s.rot + '°';
+    document.querySelectorAll('#props [data-k="rot"]').forEach(inp => inp.value = s.rot);
+  } else if (drag.type === 'scale') {
+    const s = shapes.find(q => q.id === drag.id);
+    const currDist = Math.hypot(X - drag.cx, Y - drag.cy);
+    let factor = Math.max(0.1, currDist / drag.startDist);
+    
+    for (let k in s.p) {
+      if (typeof s.p[k] === 'number') {
+        s.p[k] = snapv(drag.startP[k] * factor);
+        if (s.p[k] <= 0 && k !== 'q') s.p[k] = 0.5;
+      }
+    }
+    
+    const gNew = geom({ ...s, p: s.p });
+    s.x = snapv(drag.cx - gNew.w / 2);
+    s.y = snapv(drag.cy - gNew.h / 2);
+    
+    schedule();
+    syncPos();
+  } else if (drag.type === 'shape') {
+    const s = shapes.find(q => q.id === drag.id);
+    if (s) { s.x = snapv(X - drag.dx); s.y = snapv(Y - drag.dy); schedule(); syncPos(); }
+  } else {
+    if (Math.abs(p.x - drag.px) + Math.abs(p.y - drag.py) > 3) drag.moved = true;
+    view.ox = drag.ox + (p.x - drag.px); view.oy = drag.oy + (p.y - drag.py);
+    view.touched = true; schedule();
+  }
+});
+
+const endDrag = () => {
+  if (drag && drag.type === 'pan' && !drag.moved) select(null);
+  if (drag && (drag.type === 'rotate' || drag.type === 'scale')) buildForm();
+  drag = null; canvas.style.cursor = 'grab';
+};
+
+canvas.addEventListener('pointerup', endDrag);
+canvas.addEventListener('pointercancel', endDrag);
+canvas.addEventListener('pointerleave', () => { if (!drag) $('cursor').textContent = 'Kursor: x = –; y = –'; });
+
+function zoomAt(px, py, f) {
+  const X = wx(px), Y = wy(py), ns = Math.min(300, Math.max(4, view.scale * f));
+  view.scale = ns; view.ox = px - X * ns; view.oy = py + Y * ns; view.touched = true; schedule();
+}
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const p = pos(e); zoomAt(p.x, p.y, Math.exp(-e.deltaY * 0.0015));
+}, { passive: false });
+
+$('zoom-in').onclick = () => zoomAt(W / 2, H / 2, 1.25);
+$('zoom-out').onclick = () => zoomAt(W / 2, H / 2, 1 / 1.25);$('fit').onclick = () => { view.touched = false; fitView(); schedule(); };
+[['t-grid', 'grid'], ['t-cent', 'cent'], ['t-snap', 'snap']].forEach(([id, k]) => {
+  $(id).addEventListener('change', e => { opts[k] = e.target.checked; schedule(); });
+});
+$('clear-all').onclick = () => { shapes = []; selectedId = null; buildForm(); schedule(); };
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => loadPreset(b.dataset.preset));
+
+$('add-grid').innerHTML = Object.entries(TYPES).map(([k, T]) =>
+  `<button data-add="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${T.icon}</svg><span>${T.name}</span></button>`).join('');
+$('add-grid').addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (b) addShape(b.dataset.add); });
+
+$('shape-list').addEventListener('click', e => {
+  const d = e.target.closest('[data-del]');
+  if (d) { removeShape(+d.dataset.del); return; }
+  const it = e.target.closest('.shape-item');
+  if (it) select(+it.dataset.id);
+});
+
+$('props').addEventListener('input', e => {
+  const t = e.target, s = sel(); if (!s) return;
+  if (t.dataset.p) {
+    if (t.tagName === 'SELECT') { s.p[t.dataset.p] = t.value; buildForm(); }
+    else { const v = parseFloat(t.value); if (isFinite(v) && v > 0) s.p[t.dataset.p] = v; else if (t.dataset.p === 'q' && v === 0) s.p.q = 0; }
+  } else if (t.dataset.k) {
+    const v = parseFloat(t.value); if (!isFinite(v)) return;
+    if (t.dataset.k === 'rho' && v <= 0) return;
+    s[t.dataset.k] = v;
+    if (t.dataset.k === 'rot') {
+      const rv = $('rot-val'); if (rv) rv.textContent = Math.round(v) + '°';
+      document.querySelectorAll('#props [data-k="rot"]').forEach(inp => { if (inp !== t) inp.value = v; });
+    }
+  } else if (t.id === 'f-hole') { s.hole = t.checked; }
+  schedule();
+});
+
+$('props').addEventListener('click', e => {
+  const b = e.target.closest('[data-act], [data-rot-delta], [data-rot-set]'), s = sel(); if (!b || !s) return;
+  if (b.dataset.rotDelta !== undefined) {
+    s.rot = (s.rot + parseFloat(b.dataset.rotDelta)) % 360;
+    if (s.rot < 0) s.rot += 360;
+    buildForm(); schedule(); return;
+  }
+  if (b.dataset.rotSet !== undefined) {
+    s.rot = parseFloat(b.dataset.rotSet);
+    buildForm(); schedule(); return;
+  }
+  if (b.dataset.act === 'fx') s.fx = !s.fx;
+  if (b.dataset.act === 'fy') s.fy = !s.fy;
+  if (b.dataset.act === 'del') { removeShape(s.id); return; }
+  if (b.dataset.act === 'dup') {
+    const c = makeShape(s.type, { p: Object.assign({}, s.p), x: s.x + 1, y: s.y - 1, rot: s.rot, rho: s.rho, hole: s.hole, fx: s.fx, fy: s.fy });
+    select(c.id); return;
+  }
+  schedule();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Delete') return;
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+  if (selectedId) removeShape(selectedId);
+});
+
+function themeChanged() { readTheme(); schedule(); }
+readTheme();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeChanged);
+new MutationObserver(themeChanged).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+new ResizeObserver(resize).observe(canvas);
+loadPreset('rumah');
+resize();
+})();
+</script>
+</body>
+</html>
